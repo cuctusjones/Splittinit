@@ -1,4 +1,4 @@
-package com.example.jens.splittinit;
+package com.example.jens.splittinit.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,11 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-public class Tab2Group extends Fragment {
+import com.example.jens.splittinit.R;
+
+public class Tab3CheckSplit extends Fragment {
 
 
     @Override
@@ -18,7 +17,7 @@ public class Tab2Group extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View rootView = inflater.inflate(R.layout.tab2group, container, false);
+        View rootView = inflater.inflate(R.layout.tab3checksplit, container, false);
 
         //initializing stuff
         initialize(rootView);

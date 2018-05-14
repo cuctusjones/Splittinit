@@ -21,6 +21,7 @@ import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.activities.Tab1Duo;
 import com.example.jens.splittinit.activities.Tab2Group;
 import com.example.jens.splittinit.activities.Tab3CheckSplit;
+import com.example.jens.splittinit.model.User;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -78,16 +79,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
+        DatabaseReference myRef = database.getReference();
 
-        myRef.setValue("Hello, World!");
+        User testuser = new User("1","Jens","Fischer","jensfischerx@gmail.com");
+
+
+        myRef.child("users").child(testuser.getId()).setValue(testuser);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
+                User value = dataSnapshot.child("users").child("1").getValue(User.class);
+
+
                 Log.d(TAG, "Value is: " + value);
             }
 

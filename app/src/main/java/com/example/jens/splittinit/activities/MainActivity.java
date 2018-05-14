@@ -1,4 +1,4 @@
-package com.example.jens.splittinit;
+package com.example.jens.splittinit.activities;
 
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;

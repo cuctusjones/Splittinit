@@ -29,7 +29,7 @@
             android:background="?android:attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="QUARTETT">
+            app:title="SPLITTINIT">
 
         </android.support.v7.widget.Toolbar>
 

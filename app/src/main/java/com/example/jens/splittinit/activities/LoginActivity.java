@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.jens.splittinit.MainActivity;
+import com.example.jens.splittinit.activities.MainActivity;
 import com.example.jens.splittinit.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

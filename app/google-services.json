@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "879682812953",
+    "firebase_url": "https://splittinit.firebaseio.com",
+    "project_id": "splittinit",
+    "storage_bucket": "splittinit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879682812953:android:40596137766a575e",
+        "android_client_info": {
+          "package_name": "com.example.jens.splittinit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879682812953-m3ogps9kievakb5irtkr9nfvhjq7dtmq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jens.splittinit",
+            "certificate_hash": "2dbe164ab172fa98266fe9d896287c225a6d2b29"
+          }
+        },
+        {
+          "client_id": "879682812953-bdt0gjidmdol8pi9uigs5h0aa0doo5oa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXmIuSCz9bIZ3M5e2Rjynw6goP_Yox4KM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879682812953-bdt0gjidmdol8pi9uigs5h0aa0doo5oa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

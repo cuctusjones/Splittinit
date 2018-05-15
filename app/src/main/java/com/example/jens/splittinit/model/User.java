@@ -1,6 +1,8 @@
 package com.example.jens.splittinit.model;
 
 
+import android.net.Uri;
+
 import java.net.URL;
 
 public class User {
@@ -9,7 +11,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-    private String image;
+    private Uri image;
 
 
     public User() {
@@ -24,7 +26,7 @@ public class User {
         this.email = email;
     }
 
-    public User(String id, String firstName, String lastName, String email, String image) {
+    public User(String id, String firstName, String lastName, String email, Uri image) {
 
         this.id = id;
         this.firstName = firstName;
@@ -65,11 +67,11 @@ public class User {
         this.email = email;
     }
 
-    public String getImage() {
+    public Uri getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Uri image) {
         this.image = image;
     }
 

@@ -23,11 +23,15 @@ import com.example.jens.splittinit.activities.Tab2Group;
 import com.example.jens.splittinit.activities.Tab3CheckSplit;
 import com.example.jens.splittinit.model.User;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private FirebaseAuth auth;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private StorageReference mStorageRef;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -80,27 +86,33 @@ public class MainActivity extends AppCompatActivity {
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
 
-        User testuser = new User("1","Jens","Fischer","jensfischerx@gmail.com");
 
 
-        myRef.child("users").child(testuser.getId()).setValue(testuser);
+        User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
+
+        //User testuser = new User("1","Jens","Fischer","jensfischerx@gmail.com");
+
+
+        myRef.child("users").child(user.getId()).setValue(user);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                User value = dataSnapshot.child("users").child("1").getValue(User.class);
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
 
-                Log.d(TAG, "Value is: " + value);
+                Log.d("login", "Value is: " + value);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
+                Log.w("login", "Failed to read value.", error.toException());
             }
         });
 

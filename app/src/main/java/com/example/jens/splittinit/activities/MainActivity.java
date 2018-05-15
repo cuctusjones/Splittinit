@@ -21,6 +21,7 @@ import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.activities.Tab1Duo;
 import com.example.jens.splittinit.activities.Tab2Group;
 import com.example.jens.splittinit.activities.Tab3CheckSplit;
+import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.User;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,8 @@ import com.google.firebase.storage.StorageReference;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -93,10 +96,13 @@ public class MainActivity extends AppCompatActivity {
 
         User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
 
+        user.getFriends().add("jensfischerx@googlemail.com");
+        user.getExpenses().add(new Expense(20,"jensfischerx@googlemail.com"));
         //User testuser = new User("1","Jens","Fischer","jensfischerx@gmail.com");
 
 
         myRef.child("users").child(user.getId()).setValue(user);
+
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

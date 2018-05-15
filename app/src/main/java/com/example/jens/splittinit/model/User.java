@@ -4,6 +4,8 @@ package com.example.jens.splittinit.model;
 import android.net.Uri;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class User {
 
@@ -12,9 +14,16 @@ public class User {
     private String lastName;
     private String email;
     private Uri image;
+    private ArrayList<String> friends;
+    private ArrayList<Expense> expenses;
+
+
 
 
     public User() {
+        friends=new ArrayList<>();
+        expenses = new ArrayList<>();
+
 
     }
 
@@ -24,6 +33,8 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        friends=new ArrayList<>();
+        expenses = new ArrayList<>();
     }
 
     public User(String id, String firstName, String lastName, String email, Uri image) {
@@ -33,6 +44,8 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.image = image;
+        friends=new ArrayList<>();
+        expenses = new ArrayList<>();
     }
 
     public String getId() {
@@ -73,6 +86,21 @@ public class User {
 
     public void setImage(Uri image) {
         this.image = image;
+    }
+    public ArrayList<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(ArrayList<String> friends) {
+        this.friends = friends;
+    }
+
+    public ArrayList<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(ArrayList<Expense> expenses) {
+        this.expenses = expenses;
     }
 
     @Override

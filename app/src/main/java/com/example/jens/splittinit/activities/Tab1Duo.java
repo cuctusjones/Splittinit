@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.model.User;
@@ -33,23 +36,18 @@ public class Tab1Duo extends Fragment {
     private FirebaseAuth auth;
 
     private ConstraintLayout constraintLayout;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    //ListView list;
+
 
 
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onStart() {
 
-
-        View rootView = inflater.inflate(R.layout.tab1duo, container, false);
-
-        //initializing stuff
-        initialize(rootView);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
-        auth = FirebaseAuth.getInstance();
+        super.onStart();
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -72,6 +70,53 @@ public class Tab1Duo extends Fragment {
         });
 
 
+
+
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+
+        View rootView = inflater.inflate(R.layout.tab1duo, container, false);
+
+        //initializing stuff
+        initialize(rootView);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        auth = FirebaseAuth.getInstance();
+        /*String[] texts = {
+                "Google Plus",
+                "Twitter",
+                "Windows",
+                "Bing",
+                "Itunes",
+                "Wordpress",
+                "Drupal"
+        } ;
+        Integer[] imageId = {
+                R.drawable.common_google_signin_btn_icon_light_normal,
+                R.drawable.common_google_signin_btn_icon_dark_focused,
+                R.drawable.check_split,
+                R.drawable.common_google_signin_btn_text_light,
+                R.drawable.ic_launcher_background,
+                R.drawable.ic_menu,
+                R.drawable.common_full_open_on_phone
+
+        };
+
+
+        CustomList adapter = new CustomList(getActivity(),texts,imageId);
+        list.setAdapter(adapter);*/
+
+
+
+
+
+
         return rootView;
     }
 
@@ -81,7 +126,7 @@ public class Tab1Duo extends Fragment {
     }
 
     private void updateViews(User user) {
-        String text = user.getExpenses().get(0).getFriendid() + " \n debt: " + user.getExpenses().get(0).getValue();
+        String text = user.getExpenses().get(0).getFriendid() + " \ndebt: " + user.getExpenses().get(0).getValue();
         person2txt.setText(text);
     }
 
@@ -97,6 +142,8 @@ public class Tab1Duo extends Fragment {
         person2txt = (TextView) v.getRootView().findViewById(R.id.person2txt);
 
         constraintLayout = (ConstraintLayout) v.getRootView().findViewById(R.id.constraintLayout);
+
+        //list = (ListView) v.getRootView().findViewById(R.id.list);
 
 
 

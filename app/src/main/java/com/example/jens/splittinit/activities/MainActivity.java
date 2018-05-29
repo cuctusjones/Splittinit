@@ -80,6 +80,24 @@ public class MainActivity extends AppCompatActivity {
 
        super.onStart();
 
+       myRef.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(DataSnapshot dataSnapshot) {
+               // This method is called once with the initial value and again
+               // whenever data at this location is updated.
+               User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+
+               currentUser = value;
+               Log.d("login", "Value is: " + value);
+           }
+
+           @Override
+           public void onCancelled(DatabaseError error) {
+               // Failed to read value
+               Log.w("login", "Failed to read value.", error.toException());
+           }
+       });
+
        String name="nothing worked";
        String email ="nothing worked";
 
@@ -126,14 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-       User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
 
-       user.getFriends().add("jensfischerx@googlemail.com");
-       user.getExpenses().add(new Expense(20,"jensfischerx@googlemail.com"));
-       //User testuser = new User("1","Jens","Fischer","jensfischerx@gmail.com");
-
-
-       //myRef.child("users").child(user.getId()).setValue(user);
 
 
 
@@ -194,23 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
-                currentUser = value;
-                Log.d("login", "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("login", "Failed to read value.", error.toException());
-            }
-        });
 
 
         // Obtain the FirebaseAnalytics instance.
@@ -223,6 +218,10 @@ public class MainActivity extends AppCompatActivity {
         revEmailField = (TextView) headerView.findViewById(R.id.email_field);
 
         revNameField = (TextView) headerView.findViewById(R.id.name_field);
+
+
+
+
 
     }
 

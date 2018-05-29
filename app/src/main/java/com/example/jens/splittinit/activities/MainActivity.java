@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAnalytics mFirebaseAnalytics;
     private StorageReference mStorageRef;
 
+    private FloatingActionButton fab;
+
     private DrawerLayout mDrawerLayout;
 
     /**
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-    private String TAG = "basicTAG";
+
 
 
     @Override
@@ -152,9 +154,7 @@ public class MainActivity extends AppCompatActivity {
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-
-
-
+        fab = findViewById(R.id.fab);
 
     }
 
@@ -233,5 +233,9 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+
+
     }
+
+
 }

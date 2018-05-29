@@ -5,10 +5,12 @@
             <menu>
                 <item android:id="@+id/nav_item_one"
                     android:icon="@drawable/ic_menu"
+                    android:clickable="true"
                     android:title="You owe: 420$" />
 
                 <item android:id="@+id/nav_item_two"
                     android:icon="@drawable/ic_menu"
+                    android:clickable="false"
                     android:title="You get: 420$" />
 
             </menu>

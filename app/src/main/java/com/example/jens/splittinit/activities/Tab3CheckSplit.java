@@ -48,7 +48,7 @@ public class Tab3CheckSplit extends Fragment {
                 double tip = tipNumberPicker.getValue()/100;
                 double numberOfPpl = pplNumberPicker.getValue();
                 double invoiceAmount = Double.parseDouble(checkAmount.getText().toString());
-               double tmp = ((invoiceAmount*tip) + invoiceAmount) / numberOfPpl;
+               double tmp = (float)Math.round(((((invoiceAmount*tip) + invoiceAmount) / numberOfPpl) * 100) / 100);
                String amount = Double.toString(tmp);
                splittedValue.setText(amount + "€");
             }

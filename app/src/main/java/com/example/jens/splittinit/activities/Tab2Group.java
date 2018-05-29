@@ -2,6 +2,7 @@ package com.example.jens.splittinit.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.example.jens.splittinit.R;
 
 public class Tab2Group extends Fragment {
+
 
 
     @Override
@@ -31,6 +33,7 @@ public class Tab2Group extends Fragment {
 
 
     private void initialize(View v) {
+
 
     }
 

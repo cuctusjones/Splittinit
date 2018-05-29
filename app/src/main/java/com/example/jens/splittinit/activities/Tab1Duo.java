@@ -1,6 +1,8 @@
 package com.example.jens.splittinit.activities;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +31,9 @@ public class Tab1Duo extends Fragment {
     private TextView person2txt;
     private StorageReference mStorageRef;
     private FirebaseAuth auth;
+
+    private ConstraintLayout constraintLayout;
+
 
 
 
@@ -70,10 +75,16 @@ public class Tab1Duo extends Fragment {
         return rootView;
     }
 
+
+    public ConstraintLayout getConstraintLayout(){
+        return constraintLayout;
+    }
+
     private void updateViews(User user) {
         String text = user.getExpenses().get(0).getFriendid() + " \n debt: " + user.getExpenses().get(0).getValue();
         person2txt.setText(text);
     }
+
 
 
     private void initialize(View v) {
@@ -84,6 +95,11 @@ public class Tab1Duo extends Fragment {
 
         person1txt = (TextView) v.getRootView().findViewById(R.id.person1txt);
         person2txt = (TextView) v.getRootView().findViewById(R.id.person2txt);
+
+        constraintLayout = (ConstraintLayout) v.getRootView().findViewById(R.id.constraintLayout);
+
+
+
 
     }
 }

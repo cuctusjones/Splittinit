@@ -28,11 +28,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class Tab1Duo extends Fragment {
 
-    private ImageView person1;
-    private ImageView person2;
 
-    private TextView person1txt;
-    private TextView person2txt;
     private StorageReference mStorageRef;
     private FirebaseAuth auth;
 
@@ -128,20 +124,14 @@ public class Tab1Duo extends Fragment {
 
         CustomList adapter = new CustomList(getActivity(),expenses,imageId);
         list.setAdapter(adapter);
-        String text = user.getExpenses().get(0).getFriendid() + " \ndebt: " + user.getExpenses().get(0).getValue();
-        //person2txt.setText(text);
+
     }
 
 
 
     private void initialize(View v) {
 
-        //Imageviews
-        /*person1 = (ImageView) v.getRootView().findViewById(R.id.person1);
-        person2 = (ImageView) v.getRootView().findViewById(R.id.person2);
 
-        person1txt = (TextView) v.getRootView().findViewById(R.id.person1txt);
-        person2txt = (TextView) v.getRootView().findViewById(R.id.person2txt);*/
 
         constraintLayout = (ConstraintLayout) v.getRootView().findViewById(R.id.constraintLayout);
 

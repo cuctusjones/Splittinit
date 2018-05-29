@@ -38,7 +38,7 @@ public class Tab1Duo extends Fragment {
     private ConstraintLayout constraintLayout;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    //ListView list;
+    ListView list;
 
 
 
@@ -88,29 +88,7 @@ public class Tab1Duo extends Fragment {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         auth = FirebaseAuth.getInstance();
-        /*String[] texts = {
-                "Google Plus",
-                "Twitter",
-                "Windows",
-                "Bing",
-                "Itunes",
-                "Wordpress",
-                "Drupal"
-        } ;
-        Integer[] imageId = {
-                R.drawable.common_google_signin_btn_icon_light_normal,
-                R.drawable.common_google_signin_btn_icon_dark_focused,
-                R.drawable.check_split,
-                R.drawable.common_google_signin_btn_text_light,
-                R.drawable.ic_launcher_background,
-                R.drawable.ic_menu,
-                R.drawable.common_full_open_on_phone
 
-        };
-
-
-        CustomList adapter = new CustomList(getActivity(),texts,imageId);
-        list.setAdapter(adapter);*/
 
 
 
@@ -126,8 +104,24 @@ public class Tab1Duo extends Fragment {
     }
 
     private void updateViews(User user) {
+
+        String[] texts = {user.getExpenses().get(0).getFriendid() + " \n\nDEBT: " + user.getExpenses().get(0).getValue() +"€",
+                user.getExpenses().get(1).getFriendid() + " \n\nDEBT: " + user.getExpenses().get(1).getValue() +"€"
+
+
+        } ;
+        Integer[] imageId = {
+                R.drawable.common_google_signin_btn_icon_light_normal,
+                R.drawable.check_split
+
+
+        };
+
+
+        CustomList adapter = new CustomList(getActivity(),texts,imageId);
+        list.setAdapter(adapter);
         String text = user.getExpenses().get(0).getFriendid() + " \ndebt: " + user.getExpenses().get(0).getValue();
-        person2txt.setText(text);
+        //person2txt.setText(text);
     }
 
 
@@ -135,15 +129,15 @@ public class Tab1Duo extends Fragment {
     private void initialize(View v) {
 
         //Imageviews
-        person1 = (ImageView) v.getRootView().findViewById(R.id.person1);
+        /*person1 = (ImageView) v.getRootView().findViewById(R.id.person1);
         person2 = (ImageView) v.getRootView().findViewById(R.id.person2);
 
         person1txt = (TextView) v.getRootView().findViewById(R.id.person1txt);
-        person2txt = (TextView) v.getRootView().findViewById(R.id.person2txt);
+        person2txt = (TextView) v.getRootView().findViewById(R.id.person2txt);*/
 
         constraintLayout = (ConstraintLayout) v.getRootView().findViewById(R.id.constraintLayout);
 
-        //list = (ListView) v.getRootView().findViewById(R.id.list);
+        list = (ListView) v.getRootView().findViewById(R.id.list);
 
 
 

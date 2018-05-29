@@ -41,6 +41,8 @@ import com.google.firebase.storage.StorageReference;
 
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -205,6 +207,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        //User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
+
+        /*user.getFriends().add("jensfischerx@gmail.com");
+        user.getFriends().add("timo.gerhard1337@googlemail.com");
+        user.getExpenses().add(new Expense(42,"timo.gerhard1337@googlemail.com"));
+        user.getExpenses().add(new Expense(5115,"jensfischerx@gmail.com"));*/
+
+        ArrayList<Expense> expenses = new ArrayList<>();
+        expenses.add(new Expense(42,"timo.gerhard1337@googlemail.com"));
+        expenses.add(new Expense(1234,"jensfischerx@googlemail.com"));
+
+
+        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(expenses);
+
 
 
 
@@ -218,6 +234,8 @@ public class MainActivity extends AppCompatActivity {
         revEmailField = (TextView) headerView.findViewById(R.id.email_field);
 
         revNameField = (TextView) headerView.findViewById(R.id.name_field);
+
+
 
 
 

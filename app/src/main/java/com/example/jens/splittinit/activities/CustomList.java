@@ -1,4 +1,4 @@
-/*package com.example.jens.splittinit.activities;
+package com.example.jens.splittinit.activities;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -35,4 +35,3 @@ public class CustomList extends ArrayAdapter<String>{
         return rowView;
     }
 }
-*/

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jens.splittinit.R;
+import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -105,11 +106,18 @@ public class Tab1Duo extends Fragment {
 
     private void updateViews(User user) {
 
-        String[] texts = {user.getExpenses().get(0).getFriendid() + " \n\nDEBT: " + user.getExpenses().get(0).getValue() +"€",
-                user.getExpenses().get(1).getFriendid() + " \n\nDEBT: " + user.getExpenses().get(1).getValue() +"€"
+        String [] expenses= new String[user.getExpenses().size()];
+
+        int i =0;
+        for (Expense e : user.getExpenses()){
+            expenses[i]=e.getFriendid() + " \n\nDEBT: " + e.getValue() +"€";
+            i++;
+        }
 
 
-        } ;
+
+
+
         Integer[] imageId = {
                 R.drawable.common_google_signin_btn_icon_light_normal,
                 R.drawable.check_split
@@ -118,7 +126,7 @@ public class Tab1Duo extends Fragment {
         };
 
 
-        CustomList adapter = new CustomList(getActivity(),texts,imageId);
+        CustomList adapter = new CustomList(getActivity(),expenses,imageId);
         list.setAdapter(adapter);
         String text = user.getExpenses().get(0).getFriendid() + " \ndebt: " + user.getExpenses().get(0).getValue();
         //person2txt.setText(text);

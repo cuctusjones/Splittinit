@@ -1,8 +1,9 @@
 package com.example.jens.splittinit.activities;
 
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,16 +20,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.jens.splittinit.R;
-import com.example.jens.splittinit.activities.Tab1Duo;
-import com.example.jens.splittinit.activities.Tab2Group;
-import com.example.jens.splittinit.activities.Tab3CheckSplit;
 import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,11 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,10 +55,19 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseAnalytics mFirebaseAnalytics;
     private StorageReference mStorageRef;
+    DatabaseReference myRef;
+    FirebaseDatabase database;
+    FirebaseUser firebaseUser;
+    NavigationView navigationView;
+    View headerView;
+    TextView revNameField;
+    TextView revEmailField;
 
     private FloatingActionButton fab;
 
+
     private DrawerLayout mDrawerLayout;
+    private User currentUser;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -68,7 +75,69 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
 
+   @Override
+    protected void onStart(){
 
+       super.onStart();
+
+       String name="nothing worked";
+       String email ="nothing worked";
+
+
+       firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
+       if (firebaseUser != null) {
+           for (UserInfo profile : firebaseUser.getProviderData()) {
+               // Id of the provider (ex: google.com)
+               String providerId = profile.getProviderId();
+
+               // UID specific to the provider
+               String uid = profile.getUid();
+
+               // Name, email address, and profile photo Url
+               name = profile.getDisplayName();
+
+               //name_field.setText(name);
+                email = profile.getEmail();
+               Uri photoUrl = profile.getPhotoUrl();
+           }
+
+
+
+       }else {
+           name= "provider shit dont work";
+           email = "provider shit dont work";
+       }
+
+
+
+
+
+
+
+
+       revEmailField.setText(email);
+
+       revNameField.setText(name);
+
+
+
+
+
+
+
+
+       User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
+
+       user.getFriends().add("jensfischerx@googlemail.com");
+       user.getExpenses().add(new Expense(20,"jensfischerx@googlemail.com"));
+       //User testuser = new User("1","Jens","Fischer","jensfischerx@gmail.com");
+
+
+       //myRef.child("users").child(user.getId()).setValue(user);
+
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.mViewPager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -115,21 +186,12 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
-
-
-        User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
-
-        user.getFriends().add("jensfischerx@googlemail.com");
-        user.getExpenses().add(new Expense(20,"jensfischerx@googlemail.com"));
-        //User testuser = new User("1","Jens","Fischer","jensfischerx@gmail.com");
-
-
-        myRef.child("users").child(user.getId()).setValue(user);
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -139,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
-
+                currentUser = value;
                 Log.d("login", "Value is: " + value);
             }
 
@@ -155,8 +217,17 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         fab = findViewById(R.id.fab);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        headerView = navigationView.getHeaderView(0);
+
+        revEmailField = (TextView) headerView.findViewById(R.id.email_field);
+
+        revNameField = (TextView) headerView.findViewById(R.id.name_field);
 
     }
+
+
+
 
 
     @Override

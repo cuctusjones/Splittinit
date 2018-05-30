@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         ActionBar actionbar = getSupportActionBar();
@@ -172,7 +172,9 @@ public class MainActivity extends AppCompatActivity {
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override

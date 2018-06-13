@@ -87,6 +87,26 @@ public class Tab1Duo extends Fragment {
         auth = FirebaseAuth.getInstance();
 
 
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+
+                updateViews(value);
+
+
+                Log.d("login", "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("login", "Failed to read value.", error.toException());
+            }
+        });
+
 
 
 

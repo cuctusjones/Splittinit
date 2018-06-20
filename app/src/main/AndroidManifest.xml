@@ -49,6 +49,11 @@
             android:label="@string/title_activity_reset_password"
             android:theme="@style/AppTheme.NoActionBar"
         />
+
+        <activity android:name=".activities.DuoActivity"
+            android:label="Duo"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

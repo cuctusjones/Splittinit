@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     TextView revNameField;
     TextView revEmailField;
 
-    private FloatingActionButton fab;
+    public FloatingActionButton fab;
 
 
     private DrawerLayout mDrawerLayout;
@@ -141,16 +141,29 @@ public class MainActivity extends AppCompatActivity {
        revNameField.setText(name);
 
 
+    }
 
+    @Override
+    public void onResume(){
+       super.onResume();
 
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
+                currentUser = value;
+                Log.d("login", "Value is: " + value);
+            }
 
-
-
-
-
-
-
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("login", "Failed to read value.", error.toException());
+            }
+        });
     }
 
     @Override

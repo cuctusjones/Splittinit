@@ -19,7 +19,7 @@ import com.example.jens.splittinit.R;
 public class DuoActivity extends AppCompatActivity {
 
     public TextView email, name;
-    public EditText oweMoney, description;
+    public EditText oweMoney, description, amount;
     public RadioButton youOwe, himOwe;
     public ImageView profileImage;
     public Button confirm;
@@ -68,6 +68,7 @@ public class DuoActivity extends AppCompatActivity {
         profileImage = (ImageView) findViewById(R.id.profile_image);
 
         confirm = (Button) findViewById(R.id.confirm);
+        amount = (EditText) findViewById(R.id.amount) ;
 
         email.setText(selectedFriend);
 

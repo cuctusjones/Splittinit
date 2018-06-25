@@ -108,11 +108,9 @@ public class Tab1Duo extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String[] test = new String[]{"1", "2", "3", "4"};
-
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Pick a color");
+                builder.setTitle("Pick an email");
 
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
                 for(String name :currentFriends){

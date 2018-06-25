@@ -23,6 +23,27 @@ public class DuoActivity extends AppCompatActivity {
     public RadioButton youOwe, himOwe;
     public ImageView profileImage;
     public Button confirm;
+    private String selectedFriend;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                selectedFriend= null;
+            } else {
+                selectedFriend= extras.getString("selectedFriend");
+            }
+        } else {
+            selectedFriend= (String) savedInstanceState.getSerializable("selectedFriend");
+        }
+
+
+    }
 
 
     @Override
@@ -48,9 +69,23 @@ public class DuoActivity extends AppCompatActivity {
 
         confirm = (Button) findViewById(R.id.confirm);
 
+        email.setText(selectedFriend);
+
+
+
+
         //close activity on button pressed
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+
+
+
+
+
+
+
+
                 finish();
             }
         });

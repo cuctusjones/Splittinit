@@ -44,7 +44,8 @@ public class Tab1Duo extends Fragment {
     DatabaseReference myRef;
     ListView list;
 
-    private ArrayList<String> currentFriends;
+    private ArrayList<String> currentFriendsIds;
+    private ArrayList<String> currentFriendsEmails;
 
 
 
@@ -62,7 +63,13 @@ public class Tab1Duo extends Fragment {
                 // whenever data at this location is updated.
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
-                currentFriends = value.getFriends();
+                currentFriendsIds = value.getFriends();
+                currentFriendsEmails = new ArrayList<>();
+
+                for(String id : currentFriendsIds){
+
+                    currentFriendsEmails.add(dataSnapshot.child("users").child(id).child("email").getValue(String.class));
+                }
                 updateViews(value);
 
 
@@ -112,10 +119,10 @@ public class Tab1Duo extends Fragment {
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Pick a color");
+                builder.setTitle("Pick a friend");
 
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
-                for(String name :currentFriends){
+                for(String name :currentFriendsEmails){
                     arrayAdapter.add(name);
                 }
 
@@ -129,8 +136,12 @@ public class Tab1Duo extends Fragment {
                 builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         //String strName = arrayAdapter.getItem(which);
-                        startActivity(new Intent(getActivity(), DuoActivity.class));
+
+                        Intent intent = new Intent(getActivity(),DuoActivity.class);
+                        intent.putExtra("selectedFriend",arrayAdapter.getItem(which));
+                        startActivity(intent);
                         dialog.dismiss();
                         /*AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
                         builderInner.setMessage(strName);
@@ -147,6 +158,29 @@ public class Tab1Duo extends Fragment {
                 builder.show();
             }
             });
+
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+
+                currentFriendsIds = value.getFriends();
+                updateViews(value);
+
+
+
+                Log.d("login", "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("login", "Failed to read value.", error.toException());
+            }
+        });
         }
 
 

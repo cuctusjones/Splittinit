@@ -248,7 +248,15 @@ public class Tab1Duo extends Fragment {
 
         Integer[] imageId = {
                 R.drawable.common_google_signin_btn_icon_light_normal,
-                R.drawable.check_split
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+
 
 
         };

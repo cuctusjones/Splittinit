@@ -1,5 +1,8 @@
 package com.example.jens.splittinit.activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -17,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +44,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -68,84 +73,26 @@ public class MainActivity extends AppCompatActivity {
 
     public FloatingActionButton fab;
 
+    public MenuItem owing, getting, add_friend, add_group;
+
 
     private DrawerLayout mDrawerLayout;
     private User currentUser;
+
+    private String m_Text = "Enter email of friend";
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
 
+    public AlertDialog myDialog;
 
-   @Override
-    protected void onStart(){
-
-       super.onStart();
-
-       myRef.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(DataSnapshot dataSnapshot) {
-               // This method is called once with the initial value and again
-               // whenever data at this location is updated.
-               User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
-
-               currentUser = value;
-               Log.d("login", "Value is: " + value);
-           }
-
-           @Override
-           public void onCancelled(DatabaseError error) {
-               // Failed to read value
-               Log.w("login", "Failed to read value.", error.toException());
-           }
-       });
-
-       String name="nothing worked";
-       String email ="nothing worked";
-
-
-       firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
-       if (firebaseUser != null) {
-           for (UserInfo profile : firebaseUser.getProviderData()) {
-               // Id of the provider (ex: google.com)
-               String providerId = profile.getProviderId();
-
-               // UID specific to the provider
-               String uid = profile.getUid();
-
-               // Name, email address, and profile photo Url
-               name = profile.getDisplayName();
-
-               //name_field.setText(name);
-                email = profile.getEmail();
-               Uri photoUrl = profile.getPhotoUrl();
-           }
-
-
-
-       }else {
-           name= "provider shit dont work";
-           email = "provider shit dont work";
-       }
-
-
-
-
-
-
-
-
-       revEmailField.setText(email);
-
-       revNameField.setText(name);
-
-
-    }
 
     @Override
-    public void onResume(){
-       super.onResume();
+    protected void onStart() {
+
+        super.onStart();
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -164,12 +111,78 @@ public class MainActivity extends AppCompatActivity {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
+
+        String name = "nothing worked";
+        String email = "nothing worked";
+
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            for (UserInfo profile : firebaseUser.getProviderData()) {
+                // Id of the provider (ex: google.com)
+                String providerId = profile.getProviderId();
+
+                // UID specific to the provider
+                String uid = profile.getUid();
+
+                // Name, email address, and profile photo Url
+                name = profile.getDisplayName();
+
+                //name_field.setText(name);
+                email = profile.getEmail();
+                Uri photoUrl = profile.getPhotoUrl();
+            }
+
+
+        } else {
+            name = "provider shit dont work";
+            email = "provider shit dont work";
+        }
+
+
+        revEmailField.setText(email);
+
+        revNameField.setText(name);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+
+                currentUser = value;
+                Log.d("login", "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("login", "Failed to read value.", error.toException());
+            }
+        });
+
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        add_friend = (MenuItem) findViewById(R.id.add_friend);
+        add_group = (MenuItem) findViewById(R.id.add_group);
+        owing = (MenuItem) findViewById(R.id.owing);
+        getting = (MenuItem) findViewById(R.id.getting);
+
+        //add_friend.setEnabled(false);
+        //add_group.setEnabled(false);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -186,10 +199,9 @@ public class MainActivity extends AppCompatActivity {
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
 
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(
+        /*navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -198,12 +210,13 @@ public class MainActivity extends AppCompatActivity {
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
+
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
 
                         return true;
                     }
-                });
+                });*/
 
 
 
@@ -222,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
 
-
         //User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
 
         /*user.getFriends().add("jensfischerx@gmail.com");
@@ -231,13 +243,11 @@ public class MainActivity extends AppCompatActivity {
         user.getExpenses().add(new Expense(5115,"jensfischerx@gmail.com"));*/
 
         ArrayList<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense(42,"timo.gerhard1337@googlemail.com"));
-        expenses.add(new Expense(1234,"jensfischerx@googlemail.com"));
+        expenses.add(new Expense(42, "timo.gerhard1337@googlemail.com"));
+        expenses.add(new Expense(1234, "jensfischerx@googlemail.com"));
 
 
         myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(expenses);
-
-
 
 
         // Obtain the FirebaseAnalytics instance.
@@ -255,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                if(position == 0 | position == 1) {
+                if (position == 0 | position == 1) {
                     fab.show();
                 } else {
                     fab.hide();
@@ -264,12 +274,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
-
-
-
 
 
     @Override
@@ -291,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if(id == R.id.action_logout){
+        if (id == R.id.action_logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
@@ -301,7 +306,46 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
+
+
         return super.onOptionsItemSelected(item);
+    }
+
+    //method to show dialog when adding a friend
+    public void addFriend(MenuItem item){
+        final EditText taskEditText = new EditText(MainActivity.this);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Add a new friend")
+                .setMessage("Type the email of your friend")
+                .setView(taskEditText)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = String.valueOf(taskEditText.getText());
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+    }
+
+    //method to show dialog when adding a friend
+    public void addGroup(MenuItem item) {
+        final EditText taskEditText = new EditText(MainActivity.this);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Add a new group")
+                .setMessage("How you wanna name your group?")
+                .setView(taskEditText)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = String.valueOf(taskEditText.getText());
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+
     }
 
     /**
@@ -332,8 +376,6 @@ public class MainActivity extends AppCompatActivity {
                     return null;
             }
         }
-
-
 
 
         @Override

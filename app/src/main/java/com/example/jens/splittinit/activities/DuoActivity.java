@@ -70,11 +70,6 @@ public class DuoActivity extends AppCompatActivity {
         confirm = (Button) findViewById(R.id.confirm);
         amount = (EditText) findViewById(R.id.amount) ;
 
-        email.setText(selectedFriend);
-
-
-
-
         //close activity on button pressed
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

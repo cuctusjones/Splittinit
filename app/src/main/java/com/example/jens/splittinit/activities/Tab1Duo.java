@@ -47,6 +47,8 @@ public class Tab1Duo extends Fragment {
     private ArrayList<String> currentFriendsIds;
     private ArrayList<String> currentFriendsEmails;
 
+    private DataSnapshot myDataSnapshot;
+
 
 
 
@@ -141,6 +143,7 @@ public class Tab1Duo extends Fragment {
 
                         Intent intent = new Intent(getActivity(),DuoActivity.class);
                         intent.putExtra("selectedFriend",arrayAdapter.getItem(which));
+                        intent.putExtra("selectedFriendId",currentFriendsIds.get(which));
                         startActivity(intent);
                         dialog.dismiss();
                         /*AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
@@ -205,6 +208,7 @@ public class Tab1Duo extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+                myDataSnapshot = dataSnapshot;
 
                 updateViews(value);
 
@@ -234,7 +238,7 @@ public class Tab1Duo extends Fragment {
 
         int i =0;
         for (Expense e : user.getExpenses()){
-            expenses[i]=e.getFriendid() + " \n\nDEBT: " + e.getValue() +"€";
+            expenses[i]=myDataSnapshot.child("users").child(e.getFriendid()).child("email").getValue(String.class) + " \n\nDEBT: " + e.getValue() +"€";
             i++;
         }
 

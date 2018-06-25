@@ -16,16 +16,16 @@
             </menu>
         </item>
 
-        <item android:title="Add your idiot friends">
+        <item android:title="Add your friends and create groups ">
             <menu>
                 <item android:id="@+id/add_friend"
-                    android:icon="@drawable/ic_menu"
+                    android:icon="@drawable/ic_add_black_24dp"
                     android:checkable="true"
                     android:onClick="addFriend"
                     android:title="Add friend" />
 
                 <item android:id="@+id/add_group"
-                    android:icon="@drawable/ic_menu"
+                    android:icon="@drawable/ic_add_black_24dp"
                     android:checkable="false"
                     android:onClick="addGroup"
                     android:title="Add group" />

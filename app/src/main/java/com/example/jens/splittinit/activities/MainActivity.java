@@ -242,12 +242,12 @@ public class MainActivity extends AppCompatActivity {
         user.getExpenses().add(new Expense(42,"timo.gerhard1337@googlemail.com"));
         user.getExpenses().add(new Expense(5115,"jensfischerx@gmail.com"));*/
 
-        ArrayList<Expense> expenses = new ArrayList<>();
+        /*ArrayList<Expense> expenses = new ArrayList<>();
         expenses.add(new Expense(42, "timo.gerhard1337@googlemail.com"));
         expenses.add(new Expense(1234, "jensfischerx@googlemail.com"));
 
 
-        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(expenses);
+        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(expenses);*/
 
 
         // Obtain the FirebaseAnalytics instance.

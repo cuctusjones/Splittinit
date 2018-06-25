@@ -1,20 +1,28 @@
 package com.example.jens.splittinit.activities;
 
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jens.splittinit.R;
+import com.example.jens.splittinit.model.Expense;
+import com.example.jens.splittinit.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class DuoActivity extends AppCompatActivity {
 
@@ -23,7 +31,14 @@ public class DuoActivity extends AppCompatActivity {
     public RadioButton youOwe, himOwe;
     public ImageView profileImage;
     public Button confirm;
-    private String selectedFriend;
+    private String selectedFriendEmail;
+    private String selectedFriendName;
+    private String selectedFriendId;
+    DatabaseReference myRef;
+    FirebaseDatabase database;
+    private FirebaseAuth auth;
+    private ArrayList<Expense> currentUserExpenses;
+    private ArrayList<Expense> otherUserExpenses;
 
 
     @Override
@@ -31,15 +46,47 @@ public class DuoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        auth = FirebaseAuth.getInstance();
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+                User other = dataSnapshot.child("users").child(selectedFriendId).getValue(User.class);
+
+
+                currentUserExpenses = value.getExpenses();
+                otherUserExpenses = other.getExpenses();
+
+
+
+
+                Log.d("login", "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("login", "Failed to read value.", error.toException());
+            }
+        });
+
+
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
-                selectedFriend= null;
+                selectedFriendEmail = null;
             } else {
-                selectedFriend= extras.getString("selectedFriend");
+                selectedFriendEmail = extras.getString("selectedFriend");
+                selectedFriendId = extras.getString("selectedFriendId");
             }
         } else {
-            selectedFriend= (String) savedInstanceState.getSerializable("selectedFriend");
+            selectedFriendEmail = (String) savedInstanceState.getSerializable("selectedFriend");
+            selectedFriendId = (String) savedInstanceState.getSerializable("selectedFriendId");
         }
 
 
@@ -70,7 +117,16 @@ public class DuoActivity extends AppCompatActivity {
         confirm = (Button) findViewById(R.id.confirm);
         amount = (EditText) findViewById(R.id.amount) ;
 
-        email.setText(selectedFriend);
+        email.setText(selectedFriendEmail);
+        if (null != selectedFriendEmail && selectedFriendEmail.length() > 0 )
+        {
+            int endIndex = selectedFriendEmail.lastIndexOf("@");
+            if (endIndex != -1)
+            {
+                selectedFriendName = selectedFriendEmail.substring(0, endIndex); // not forgot to put check if(endIndex != -1)
+            }
+        }
+        name.setText(selectedFriendName);
 
 
 
@@ -78,13 +134,30 @@ public class DuoActivity extends AppCompatActivity {
         //close activity on button pressed
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if(isValid()){
+                    if(youOwe.isSelected()){
+
+                        currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()),selectedFriendId));
+                        otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString())*-1,auth.getCurrentUser().getUid()));
+
+                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+
+                    }else{
+                        currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString())*-1,selectedFriendId));
+                        otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()),auth.getCurrentUser().getUid()));
+
+                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
 
 
+                    }
 
 
-
-
-
+                }else{
+                    Toast.makeText(DuoActivity.this, "invalid input try again!",
+                            Toast.LENGTH_SHORT).show();
+                }
 
 
                 finish();
@@ -93,6 +166,42 @@ public class DuoActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private boolean isValid() {
+        if(name.getText().toString().equals("Titel")){
+            Toast.makeText(DuoActivity.this, "enter title",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(description.getText().toString().equals("description")) {
+            Toast.makeText(DuoActivity.this, "enter description",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(!isInteger(amount.getText().toString())){
+            Toast.makeText(DuoActivity.this, "enter valid amount",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isInteger(String s) {
+        return isInteger(s,10);
+    }
+
+    public static boolean isInteger(String s, int radix) {
+        if(s.isEmpty()) return false;
+        for(int i = 0; i < s.length(); i++) {
+            if(i == 0 && s.charAt(i) == '-') {
+                if(s.length() == 1) return false;
+                else continue;
+            }
+            if(Character.digit(s.charAt(i),radix) < 0) return false;
+        }
+        return true;
     }
 
     @Override

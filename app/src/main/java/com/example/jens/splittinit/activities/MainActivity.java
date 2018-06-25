@@ -252,7 +252,16 @@ public class MainActivity extends AppCompatActivity {
         revNameField = (TextView) headerView.findViewById(R.id.name_field);
 
 
-
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 0 | position == 1) {
+                    fab.show();
+                } else {
+                    fab.hide();
+                }
+            }
+        });
 
 
 
@@ -323,6 +332,9 @@ public class MainActivity extends AppCompatActivity {
                     return null;
             }
         }
+
+
+
 
         @Override
         public int getCount() {

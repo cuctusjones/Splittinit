@@ -4,8 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -48,11 +48,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference myRef;
     FirebaseDatabase database;
     FirebaseUser firebaseUser;
-    NavigationView navigationView;
+    public NavigationView navigationView;
     View headerView;
     TextView revNameField;
     TextView revEmailField;
@@ -81,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
     public FloatingActionButton fab;
 
     public MenuItem owing, getting, add_friend, add_group;
+    public CircleImageView profileImage;
+
+
+    private int PICK_IMAGE_REQUEST =1;
+
 
 
     private DrawerLayout mDrawerLayout;
@@ -166,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentUser = value;
-
                 Log.d("login", "Value is: " + value);
             }
 
@@ -256,9 +264,46 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         headerView = navigationView.getHeaderView(0);
 
+        profileImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+// Show only images, no videos or anything else
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+// Always show the chooser (if there are multiple options available)
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+                mDrawerLayout.closeDrawers();
+            }
+        });
+
         revEmailField = (TextView) headerView.findViewById(R.id.email_field);
 
+
         revNameField = (TextView) headerView.findViewById(R.id.name_field);
+        revNameField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText taskEditText = new EditText(MainActivity.this);
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Enter Name")
+                        .setMessage("What is your name?")
+                        .setView(taskEditText)
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String task = String.valueOf(taskEditText.getText());
+                                revNameField.setText(task);
+                                myRef.child("users").child(auth.getCurrentUser().getUid()).child("name").setValue(task);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+                mDrawerLayout.closeDrawers();
+            }
+        });
 
 
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -273,6 +318,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                // Log.d(TAG, String.valueOf(bitmap));
+
+                profileImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -386,6 +449,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskEditText.getText());
+
                     }
                 })
                 .setNegativeButton("Cancel", null)

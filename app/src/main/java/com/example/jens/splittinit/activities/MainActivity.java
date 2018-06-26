@@ -25,6 +25,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         revNameField.setText(name);
 
+
     }
 
     @Override
@@ -192,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
-
 
     }
 
@@ -274,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.Theme_Holo_Dialog_Alert));
                 builder.setMessage("Take or select picture?")
                         .setCancelable(false)
                         .setPositiveButton("Take picture", new DialogInterface.OnClickListener() {
@@ -306,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final EditText taskEditText = new EditText(MainActivity.this);
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.Theme_Holo_Dialog_Alert))
                         .setTitle("Enter Name")
                         .setMessage("What is your name?")
                         .setView(taskEditText)
@@ -346,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     profileImage.setImageBitmap(imageBitmap);
+
                 }
 
                 if (requestCode == PICK_IMAGE_REQUEST){

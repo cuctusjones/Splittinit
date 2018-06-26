@@ -20,7 +20,9 @@
 
     <TextView
         android:id="@+id/textView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
+        android:textColor="@color/white"
         android:layout_height="wrap_content"
         android:layout_marginStart="75dp"
         android:layout_marginTop="20dp"
@@ -31,8 +33,10 @@
 
     <EditText
         android:id="@+id/checkAmount"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:layout_marginStart="75dp"
         android:layout_marginTop="8dp"
         android:ems="10"
@@ -44,8 +48,10 @@
 
     <TextView
         android:id="@+id/textView2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:layout_marginStart="32dp"
         android:layout_marginTop="25dp"
         android:text="Tip:"
@@ -55,7 +61,9 @@
 
     <NumberPicker
         android:id="@+id/tipNumberPicker"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
+        android:textColor="@color/white"
         android:layout_height="53dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="17dp"
@@ -66,8 +74,10 @@
 
     <TextView
         android:id="@+id/textView3"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:text="People:"
@@ -77,8 +87,10 @@
 
     <NumberPicker
         android:id="@+id/pplNumberPicker"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="52dp"
+        android:textColor="@color/white"
         android:layout_marginStart="16dp"
         android:layout_marginTop="17dp"
         app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -89,8 +101,10 @@
 
     <TextView
         android:id="@+id/textView4"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:layout_marginStart="35dp"
         android:layout_marginTop="8dp"
         android:text="Money per person:"
@@ -100,8 +114,10 @@
 
     <TextView
         android:id="@+id/splittedValue"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="00,00"
@@ -111,8 +127,11 @@
 
     <Button
         android:id="@+id/computeButton"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="200dp"
         android:layout_height="50dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@color/white"
         android:layout_marginStart="90dp"
         android:layout_marginTop="8dp"
         android:text="compute"

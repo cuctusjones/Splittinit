@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.jens.splittinit.R;
+import com.example.jens.splittinit.activities.Tab2Group;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +37,9 @@ public class GroupList extends ArrayAdapter<String> {
 
         ImageView groupImage = (ImageView) rowView.findViewById(R.id.groupImage);
 
-        groupName.setText("test");
-        groupImage.setImageResource(R.drawable.check_split);
+
+        groupName.setText(web[position]);
+        groupImage.setImageResource(imageId[position]);
         return rowView;
     }
 }

@@ -23,8 +23,9 @@ import java.util.ArrayList;
 public class Tab2Group extends Fragment {
 
     public ListView list;
-    private ArrayList<Integer> groupImg;
-    private ArrayList<String> groupName;
+    public ArrayList<Integer> groupImg;
+    public ArrayList<String> groupName;
+
 
     public ConstraintLayout constraintLayout;
 
@@ -47,36 +48,22 @@ public class Tab2Group extends Fragment {
 
     private void updateViews() {
 
-        //groupName.add("test1");
-        //groupName.add("test1");
+        groupImg = new ArrayList<Integer>();
+        groupName = new ArrayList<String>();
+        groupName.add("test1");
+        groupName.add("test2");
 
-        //groupImg.add(R.drawable.check_split);
-        //groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        groupImg.add(R.drawable.check_split);
+        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
 
-        //Integer[] stockArr = new Integer[groupImg.size()];
-        //stockArr = groupImg.toArray(stockArr);
+        Integer[] groupImgArray = new Integer[groupImg.size()];
+        groupImgArray = groupImg.toArray(groupImgArray);
 
-        Integer[] imageId = {
-                R.drawable.common_google_signin_btn_icon_light_normal,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-        };
 
-        String [] expenses= new String[9];
-        for (int i=0; i<9; i++){
-            expenses[i] = "30";
-        }
+        String[] groupNameArray = new String[groupName.size()];
+        groupNameArray = groupName.toArray(groupNameArray);
 
-        //String[] stockArr2 = new String[groupName.size()];
-        //stockArr2 = groupName.toArray(stockArr2);
-
-        GroupList adapter = new GroupList(getActivity(), expenses, imageId);
+        GroupList adapter = new GroupList(getActivity(), groupNameArray, groupImgArray);
         list.setAdapter(adapter);
         }
 
@@ -86,7 +73,9 @@ public class Tab2Group extends Fragment {
         constraintLayout = (ConstraintLayout) v.getRootView().findViewById(R.id.constraintLayout);
         list = (ListView) v.getRootView().findViewById(R.id.list);
 
+    }
 
+    public static void setImgArray(){
 
     }
 

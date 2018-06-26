@@ -39,25 +39,44 @@ public class Tab2Group extends Fragment {
         initialize(rootView);
         //updateViews();
 
+        updateViews();
+
 
         return rootView;
     }
 
     private void updateViews() {
 
-        groupName.add("test1");
-        groupName.add("test1");
+        //groupName.add("test1");
+        //groupName.add("test1");
 
-        groupImg.add(R.drawable.check_split);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        //groupImg.add(R.drawable.check_split);
+        //groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
 
-        Integer[] stockArr = new Integer[groupImg.size()];
-        stockArr = groupImg.toArray(stockArr);
+        //Integer[] stockArr = new Integer[groupImg.size()];
+        //stockArr = groupImg.toArray(stockArr);
 
-        String[] stockArr2 = new String[groupName.size()];
-        stockArr2 = groupName.toArray(stockArr2);
+        Integer[] imageId = {
+                R.drawable.common_google_signin_btn_icon_light_normal,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+                R.drawable.check_split,
+        };
 
-        CustomList adapter = new CustomList(getActivity(), stockArr2, stockArr);
+        String [] expenses= new String[9];
+        for (int i=0; i<9; i++){
+            expenses[i] = "30";
+        }
+
+        //String[] stockArr2 = new String[groupName.size()];
+        //stockArr2 = groupName.toArray(stockArr2);
+
+        GroupList adapter = new GroupList(getActivity(), expenses, imageId);
         list.setAdapter(adapter);
         }
 

@@ -265,10 +265,10 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                if (position == 0 | position == 1) {
-                    fab.show();
-                } else {
+                if (position == 2 | position == 1) {
                     fab.hide();
+                } else {
+                    fab.show();
                 }
             }
         });

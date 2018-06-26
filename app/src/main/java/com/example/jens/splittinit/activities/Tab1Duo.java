@@ -50,9 +50,6 @@ public class Tab1Duo extends Fragment {
     private DataSnapshot myDataSnapshot;
 
 
-
-
-
     @Override
     public void onStart() {
 
@@ -63,17 +60,19 @@ public class Tab1Duo extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+                User value = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
-                currentFriendsIds = value.getFriends();
-                currentFriendsEmails = new ArrayList<>();
+                if (value.getFriends() != null) {
+                    currentFriendsIds = value.getFriends();
+                    currentFriendsEmails = new ArrayList<>();
 
-                for(String id : currentFriendsIds){
+                    for (String id : currentFriendsIds) {
 
-                    currentFriendsEmails.add(dataSnapshot.child("users").child(id).child("email").getValue(String.class));
+                        currentFriendsEmails.add(dataSnapshot.child("users").child(id).child("email").getValue(String.class));
+                    }
                 }
-                updateViews(value);
 
+                updateViews(value);
 
 
                 Log.d("login", "Value is: " + value);
@@ -87,32 +86,27 @@ public class Tab1Duo extends Fragment {
         });
 
 
-
-
     }
 
     @Override
-    public void setUserVisibleHint(boolean visible)
-    {
+    public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
-        if (visible && isResumed())
-        {
+        if (visible && isResumed()) {
             onResume();
         }
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
 
 
         super.onResume();
 
-        if (!getUserVisibleHint())
-        {
+        if (!getUserVisibleHint()) {
             return;
         }
 
-        MainActivity mainActivity = (MainActivity)getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +118,7 @@ public class Tab1Duo extends Fragment {
                 builder.setTitle("Pick a friend");
 
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
-                for(String name :currentFriendsEmails){
+                for (String name : currentFriendsEmails) {
                     arrayAdapter.add(name);
                 }
 
@@ -141,9 +135,9 @@ public class Tab1Duo extends Fragment {
 
                         //String strName = arrayAdapter.getItem(which);
 
-                        Intent intent = new Intent(getActivity(),DuoActivity.class);
-                        intent.putExtra("selectedFriend",arrayAdapter.getItem(which));
-                        intent.putExtra("selectedFriendId",currentFriendsIds.get(which));
+                        Intent intent = new Intent(getActivity(), DuoActivity.class);
+                        intent.putExtra("selectedFriend", arrayAdapter.getItem(which));
+                        intent.putExtra("selectedFriendId", currentFriendsIds.get(which));
                         startActivity(intent);
                         dialog.dismiss();
                         /*AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
@@ -160,7 +154,7 @@ public class Tab1Duo extends Fragment {
                 });
                 builder.show();
             }
-            });
+        });
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -174,7 +168,6 @@ public class Tab1Duo extends Fragment {
                 updateViews(value);
 
 
-
                 Log.d("login", "Value is: " + value);
             }
 
@@ -184,7 +177,7 @@ public class Tab1Duo extends Fragment {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
-        }
+    }
 
 
     @Override
@@ -228,7 +221,7 @@ public class Tab1Duo extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                Log.v("long clicked" , "pos" + position);
+                Log.v("long clicked", "pos" + position);
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(
                         getActivity());
@@ -261,69 +254,59 @@ public class Tab1Duo extends Fragment {
                 alert.show();
 
 
-
                 return true;
             }
         });
-
-
 
 
         return rootView;
     }
 
 
-    public ConstraintLayout getConstraintLayout(){
+    public ConstraintLayout getConstraintLayout() {
         return constraintLayout;
     }
 
     private void updateViews(User user) {
+        if (user.getExpenses() != null) {
+            String[] expenses = new String[user.getExpenses().size()];
 
-        String [] expenses= new String[user.getExpenses().size()];
+            int i = 0;
+            for (Expense e : user.getExpenses()) {
+                expenses[i] = myDataSnapshot.child("users").child(e.getFriendid()).child("email").getValue(String.class) + " \n\nDEBT: " + e.getValue() + "€";
+                i++;
+            }
 
-        int i =0;
-        for (Expense e : user.getExpenses()){
-            expenses[i]=myDataSnapshot.child("users").child(e.getFriendid()).child("email").getValue(String.class) + " \n\nDEBT: " + e.getValue() +"€";
-            i++;
+
+            Integer[] imageId = {
+                    R.drawable.common_google_signin_btn_icon_light_normal,
+                    R.drawable.check_split,
+                    R.drawable.check_split,
+                    R.drawable.check_split,
+                    R.drawable.check_split,
+                    R.drawable.check_split,
+                    R.drawable.check_split,
+                    R.drawable.check_split,
+                    R.drawable.check_split,
+
+
+            };
+
+
+            CustomList adapter = new CustomList(getActivity(), expenses, imageId);
+            list.setAdapter(adapter);
+
         }
-
-
-
-
-
-        Integer[] imageId = {
-                R.drawable.common_google_signin_btn_icon_light_normal,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-                R.drawable.check_split,
-
-
-
-        };
-
-
-        CustomList adapter = new CustomList(getActivity(),expenses,imageId);
-        list.setAdapter(adapter);
-
     }
 
 
-
-    private void initialize(View v) {
-
+        private void initialize (View v){
 
 
-        constraintLayout = (ConstraintLayout) v.getRootView().findViewById(R.id.constraintLayout);
+            constraintLayout = (ConstraintLayout) v.getRootView().findViewById(R.id.constraintLayout);
 
-        list = (ListView) v.getRootView().findViewById(R.id.list);
-
-
+            list = (ListView) v.getRootView().findViewById(R.id.list);
 
 
+        }
     }
-}

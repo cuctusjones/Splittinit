@@ -131,11 +131,34 @@ public class DuoActivity extends AppCompatActivity {
 
 
 
-        //close activity on button pressed
+
+
+        // this code very nice i think
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                boolean existent = false;
                 if(isValid()){
                     if(youOwe.isSelected()){
+                        for(Expense e : currentUserExpenses){
+                            if(e.getFriendid().equals(selectedFriendId)){
+                                e.setValue(e.getValue()+Integer.parseInt(amount.getText().toString()));
+
+                                myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+
+                                existent= true;
+
+                            }
+                        }
+                        if(existent){
+                            for(Expense e : otherUserExpenses){
+                                if(e.getFriendid().equals(auth.getCurrentUser().getUid())){
+                                    e.setValue(e.getValue()+ (Integer.parseInt(amount.getText().toString())*-1));
+                                    myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                                }
+                            }
+                            finish();
+                            return;
+                        }
 
                         currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()),selectedFriendId));
                         otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString())*-1,auth.getCurrentUser().getUid()));
@@ -144,6 +167,27 @@ public class DuoActivity extends AppCompatActivity {
                         myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
 
                     }else{
+
+                        for(Expense e : currentUserExpenses){
+                            if(e.getFriendid().equals(selectedFriendId)){
+                                e.setValue(e.getValue()+(Integer.parseInt(amount.getText().toString())*-1));
+
+                                myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+
+                                existent= true;
+
+                            }
+                        }
+                        if(existent){
+                            for(Expense e : otherUserExpenses){
+                                if(e.getFriendid().equals(auth.getCurrentUser().getUid())){
+                                    e.setValue(e.getValue()+ (Integer.parseInt(amount.getText().toString())));
+                                    myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                                }
+                            }
+                            finish();
+                            return;
+                        }
                         currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString())*-1,selectedFriendId));
                         otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()),auth.getCurrentUser().getUid()));
 

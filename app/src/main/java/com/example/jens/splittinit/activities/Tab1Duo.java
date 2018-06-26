@@ -222,6 +222,51 @@ public class Tab1Duo extends Fragment {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
+        list.setLongClickable(true);
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                Log.v("long clicked" , "pos" + position);
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(
+                        getActivity());
+                alert.setTitle("PAYING BILLS");
+                alert.setMessage("Is this dept paid?");
+                alert.setPositiveButton("SETTLE UP", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        User user = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+                        ArrayList<Expense> expenses = user.getExpenses();
+                        expenses.remove(position);
+                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(expenses);
+
+
+                        dialog.dismiss();
+
+                    }
+                });
+                alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+
+
+
+                return true;
+            }
+        });
+
+
 
 
         return rootView;

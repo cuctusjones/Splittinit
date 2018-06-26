@@ -115,7 +115,7 @@ public class DuoActivity extends AppCompatActivity {
         profileImage = (ImageView) findViewById(R.id.profile_image);
 
         confirm = (Button) findViewById(R.id.confirm);
-        amount = (EditText) findViewById(R.id.amount) ;
+        amount = (EditText) findViewById(R.id.amount);
 
         email.setText(selectedFriendEmail);
         if (null != selectedFriendEmail && selectedFriendEmail.length() > 0 )

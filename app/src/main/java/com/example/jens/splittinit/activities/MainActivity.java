@@ -1,13 +1,16 @@
 package com.example.jens.splittinit.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,29 +23,39 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.example.jens.splittinit.R;
+import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -67,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     View headerView;
     TextView revNameField;
     TextView revEmailField;
+
+    private DataSnapshot myDataSnapshot;
 
     public FloatingActionButton fab;
 
@@ -105,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentUser = value;
+                myDataSnapshot=dataSnapshot;
                 Log.d("login", "Value is: " + value);
             }
 
@@ -237,20 +253,10 @@ public class MainActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
-
-        //User user = new User(auth.getCurrentUser().getUid(),auth.getCurrentUser().getDisplayName(),null,auth.getCurrentUser().getEmail(),auth.getCurrentUser().getPhotoUrl());
-
-        /*user.getFriends().add("jensfischerx@gmail.com");
-        user.getFriends().add("timo.gerhard1337@googlemail.com");
-        user.getExpenses().add(new Expense(42,"timo.gerhard1337@googlemail.com"));
-        user.getExpenses().add(new Expense(5115,"jensfischerx@gmail.com"));*/
-
-        /*ArrayList<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense(42, "timo.gerhard1337@googlemail.com"));
-        expenses.add(new Expense(1234, "jensfischerx@googlemail.com"));
-
-
-        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(expenses);*/
+        /*if(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid())==null) {
+            User user = new User(auth.getCurrentUser().getUid(), auth.getCurrentUser().getDisplayName(), null, auth.getCurrentUser().getEmail(), auth.getCurrentUser().getPhotoUrl());
+            myRef.child("users").child(auth.getCurrentUser().getUid()).setValue(user);
+        }*/
 
 
         // Obtain the FirebaseAnalytics instance.
@@ -403,7 +409,54 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String task = String.valueOf(taskEditText.getText());
+                        String task = taskEditText.getText().toString();
+
+                                String friendid="";
+
+                                for(int i =0;i<myDataSnapshot.child("emailid").getChildrenCount();i++){
+                                    if(myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class).equals(task)){
+                                        friendid = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class);
+                                    }
+                                }
+
+                                if(friendid.equals("")){
+                                    Toast.makeText(MainActivity.this, "not found",
+                                            Toast.LENGTH_SHORT).show();
+                                }else{
+                                    User currentUser = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+                                    User otherUser = myDataSnapshot.child("users").child(friendid).getValue(User.class);
+
+                                    ArrayList<String> myfriends = currentUser.getFriends();
+                                    ArrayList<String> hisfriends = otherUser.getFriends();
+
+                                    for(String s : myfriends){
+                                        if(s.equals(friendid)){
+                                            Toast.makeText(MainActivity.this, "you're already friends",
+                                                    Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    }
+
+
+                                    myfriends.add(friendid);
+                                    hisfriends.add(auth.getCurrentUser().getUid());
+                                    myRef.child("users").child(auth.getCurrentUser().getUid()).child("friends").setValue(myfriends);
+                                    myRef.child("users").child(friendid).child("friends").setValue(hisfriends);
+                                    Toast.makeText(MainActivity.this, "you're friends now wuhuu!",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+
+
+
+
+
+
+
+
+
+
+
                     }
                 })
                 .setNegativeButton("Cancel", null)

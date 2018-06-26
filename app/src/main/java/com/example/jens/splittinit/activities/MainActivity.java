@@ -31,6 +31,7 @@ import android.view.View;
 
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.model.Expense;
+import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -116,6 +117,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+                /*if(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid())==null) {
+                    User user = new User(auth.getCurrentUser().getUid(), auth.getCurrentUser().getDisplayName(), null, auth.getCurrentUser().getEmail(), auth.getCurrentUser().getPhotoUrl());
+                    myRef.child("users").child(auth.getCurrentUser().getUid()).setValue(user);
+                }*/
+
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentUser = value;
@@ -252,10 +258,7 @@ public class MainActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
-        /*if(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid())==null) {
-            User user = new User(auth.getCurrentUser().getUid(), auth.getCurrentUser().getDisplayName(), null, auth.getCurrentUser().getEmail(), auth.getCurrentUser().getPhotoUrl());
-            myRef.child("users").child(auth.getCurrentUser().getUid()).setValue(user);
-        }*/
+
 
 
         // Obtain the FirebaseAnalytics instance.
@@ -450,6 +453,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskEditText.getText());
+
+                        Group newGroup = new Group(task);
+                        int id = (int) myDataSnapshot.child("groups").getChildrenCount();
+                        myRef.child("groups").child(Integer.toString(id)).setValue(newGroup);
+
 
                     }
                 })

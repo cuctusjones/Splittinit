@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
     //method to show dialog when adding a friend
     public void addFriend(MenuItem item){
         final EditText taskEditText = new EditText(MainActivity.this);
-        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+        AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.Theme_Holo_Dialog_Alert))
                 .setTitle("Add a new friend")
                 .setMessage("Type the email of your friend")
                 .setView(taskEditText)
@@ -472,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
     //method to show dialog when adding a friend
     public void addGroup(MenuItem item) {
         final EditText taskEditText = new EditText(MainActivity.this);
-        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+        AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.Theme_Holo_Dialog_Alert))
                 .setTitle("Add a new group")
                 .setMessage("How you wanna name your group?")
                 .setView(taskEditText)

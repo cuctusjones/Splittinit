@@ -132,6 +132,12 @@ public class Tab2Group extends Fragment {
         groupImg.add(R.drawable.check_split);
         groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
         groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
 
 
         Integer[] groupImgArray = new Integer[groupImg.size()];

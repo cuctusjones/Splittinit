@@ -60,7 +60,7 @@ public class Tab1Duo extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                User value = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 if (value.getFriends() != null) {
                     currentFriendsIds = value.getFriends();

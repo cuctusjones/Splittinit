@@ -177,6 +177,8 @@ public class Tab1Duo extends Fragment {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
+
+        updateViews(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class));
     }
 
 

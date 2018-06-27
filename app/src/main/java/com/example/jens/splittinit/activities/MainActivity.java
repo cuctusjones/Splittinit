@@ -212,6 +212,9 @@ public class MainActivity extends AppCompatActivity {
         owing = (MenuItem) findViewById(R.id.owing);
         getting = (MenuItem) findViewById(R.id.getting);
 
+
+
+
         //add_friend.setEnabled(false);
         //add_group.setEnabled(false);
 

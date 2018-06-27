@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class DuoActivity extends AppCompatActivity {
     public TextView email, name;
     public EditText oweMoney, description, amount;
     public RadioButton youOwe, himOwe;
+
     public ImageView profileImage;
     public Button confirm;
     private String selectedFriendEmail;
@@ -39,6 +41,8 @@ public class DuoActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ArrayList<Expense> currentUserExpenses;
     private ArrayList<Expense> otherUserExpenses;
+
+    private boolean yourDebt= false;
 
 
     @Override
@@ -90,6 +94,26 @@ public class DuoActivity extends AppCompatActivity {
         }
 
 
+
+
+
+    }
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.youOwe:
+                if (checked)
+                    yourDebt = true;
+                    break;
+            case R.id.himOwe:
+                if (checked)
+                    yourDebt = false;
+                    break;
+        }
     }
 
 
@@ -136,66 +160,69 @@ public class DuoActivity extends AppCompatActivity {
         // this code very nice i think
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                boolean existent = false;
+
                 if(isValid()){
                     if(youOwe.isSelected()){
                         for(Expense e : currentUserExpenses){
                             if(e.getFriendid().equals(selectedFriendId)){
                                 e.setValue(e.getValue()+Integer.parseInt(amount.getText().toString()));
+                                System.out.println(amount.getText().toString());
 
                                 myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
 
-                                existent= true;
-
-                            }
-                        }
-                        if(existent){
-                            for(Expense e : otherUserExpenses){
-                                if(e.getFriendid().equals(auth.getCurrentUser().getUid())){
-                                    e.setValue(e.getValue()+ (Integer.parseInt(amount.getText().toString())*-1));
-                                    myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                                for(Expense ex : otherUserExpenses){
+                                    if(ex.getFriendid().equals(auth.getCurrentUser().getUid())){
+                                        ex.setValue(ex.getValue()+ (Integer.parseInt(amount.getText().toString())*-1));
+                                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                                    }
                                 }
+                                finish();
+                                return;
+
                             }
-                            finish();
-                            return;
                         }
 
-                        currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()),selectedFriendId));
-                        otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString())*-1,auth.getCurrentUser().getUid()));
 
-                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
-                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+
+
+
+                            currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()), selectedFriendId));
+                            otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()) * -1, auth.getCurrentUser().getUid()));
+
+                            myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                            myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
 
                     }else{
 
                         for(Expense e : currentUserExpenses){
                             if(e.getFriendid().equals(selectedFriendId)){
-                                e.setValue(e.getValue()+(Integer.parseInt(amount.getText().toString())*-1));
+                                e.setValue(e.getValue()+(Integer.parseInt(amount.getText().toString())*(-1)));
 
                                 myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
 
-                                existent= true;
-
-                            }
-                        }
-                        if(existent){
-                            for(Expense e : otherUserExpenses){
-                                if(e.getFriendid().equals(auth.getCurrentUser().getUid())){
-                                    e.setValue(e.getValue()+ (Integer.parseInt(amount.getText().toString())));
-                                    myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                                for(Expense ex : otherUserExpenses){
+                                    if(ex.getFriendid().equals(auth.getCurrentUser().getUid())){
+                                        ex.setValue(ex.getValue()+ (Integer.parseInt(amount.getText().toString())));
+                                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                                    }
                                 }
+                                finish();
+                                return;
+
                             }
-                            finish();
-                            return;
                         }
-                        currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString())*-1,selectedFriendId));
-                        otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()),auth.getCurrentUser().getUid()));
-
-                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
-                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
 
 
-                    }
+
+
+                            currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()) * -1, selectedFriendId));
+                            otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()), auth.getCurrentUser().getUid()));
+
+                            myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                            myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                        }
+
+
 
 
                 }else{

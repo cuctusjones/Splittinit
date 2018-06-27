@@ -65,13 +65,15 @@
             android:id="@+id/youOwe"
             android:text="YOU OWE"
             android:layout_width="match_parent"
-            android:layout_height="22dp" />
+            android:layout_height="22dp"
+            android:onClick="onRadioButtonClicked"/>
 
         <RadioButton
             android:id="@+id/himOwe"
             android:layout_width="match_parent"
             android:layout_height="22dp"
-            android:text="HE/SHE OWES" />
+            android:text="HE/SHE OWES"
+            android:onClick="onRadioButtonClicked"/>
 
     </RadioGroup>
 

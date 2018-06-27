@@ -234,8 +234,18 @@ public class Tab1Duo extends Fragment {
 
                         User user = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
                         ArrayList<Expense> expenses = user.getExpenses();
+                        Expense expense = expenses.get(position);
+                        String friendid =expense.getFriendid();
                         expenses.remove(position);
                         myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(expenses);
+                        User otherUser = myDataSnapshot.child("users").child(friendid).getValue(User.class);
+                        ArrayList<Expense> otherExpenses = otherUser.getExpenses();
+                        for(Expense expense1 : otherExpenses){
+                            if(expense1.getFriendid().equals(auth.getCurrentUser().getUid())){
+                                otherExpenses.remove(expense1);
+                            }
+                        }
+                        myRef.child("users").child(friendid).child("expenses").setValue(otherExpenses);
 
 
                         dialog.dismiss();

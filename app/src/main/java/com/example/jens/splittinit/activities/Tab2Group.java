@@ -1,5 +1,6 @@
 package com.example.jens.splittinit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -105,6 +106,8 @@ public class Tab2Group extends Fragment {
 
 
                 Log.d("login", "Value is: " + value);
+
+
             }
 
             @Override
@@ -149,6 +152,15 @@ public class Tab2Group extends Fragment {
 
         GroupList adapter = new GroupList(getActivity(), groupNameArray, groupImgArray);
         list.setAdapter(adapter);
+
+        /*list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DuoActivity.class);
+                startActivity(intent);
+            }
+        });*/
+
         }
 
 

@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
                 currentUser = value;
                 myDataSnapshot=dataSnapshot;
+                //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
                 Log.d("login", "Value is: " + value);
             }
 
@@ -158,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
                 email = profile.getEmail();
                 Uri photoUrl = profile.getPhotoUrl();
             }
+
+            //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
 
 
         } else {
@@ -194,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
+
+        //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
 
     }
 
@@ -315,8 +320,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String task = String.valueOf(taskEditText.getText());
-                                revNameField.setText(task);
+
                                 myRef.child("users").child(auth.getCurrentUser().getUid()).child("name").setValue(task);
+                                //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -335,6 +341,31 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     fab.show();
                 }
+            }
+        });
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                /*if(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid())==null) {
+                    User user = new User(auth.getCurrentUser().getUid(), auth.getCurrentUser().getDisplayName(), null, auth.getCurrentUser().getEmail(), auth.getCurrentUser().getPhotoUrl());
+                    myRef.child("users").child(auth.getCurrentUser().getUid()).setValue(user);
+                }*/
+
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+
+                currentUser = value;
+                myDataSnapshot=dataSnapshot;
+                //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
+                Log.d("login", "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("login", "Failed to read value.", error.toException());
             }
         });
 

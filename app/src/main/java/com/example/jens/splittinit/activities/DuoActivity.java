@@ -42,7 +42,7 @@ public class DuoActivity extends AppCompatActivity {
     private ArrayList<Expense> currentUserExpenses;
     private ArrayList<Expense> otherUserExpenses;
 
-    private boolean yourDebt= false;
+
 
 
     @Override
@@ -99,22 +99,7 @@ public class DuoActivity extends AppCompatActivity {
 
     }
 
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
 
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.youOwe:
-                if (checked)
-                    yourDebt = true;
-                    break;
-            case R.id.himOwe:
-                if (checked)
-                    yourDebt = false;
-                    break;
-        }
-    }
 
 
     @Override

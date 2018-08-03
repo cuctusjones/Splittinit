@@ -30,7 +30,6 @@ public class DuoActivity extends AppCompatActivity {
     public TextView email, name;
     public EditText oweMoney, description, amount;
     public RadioButton youOwe, himOwe;
-
     public ImageView profileImage;
     public Button confirm;
     private String selectedFriendEmail;
@@ -41,8 +40,6 @@ public class DuoActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ArrayList<Expense> currentUserExpenses;
     private ArrayList<Expense> otherUserExpenses;
-
-
 
 
     @Override
@@ -94,12 +91,7 @@ public class DuoActivity extends AppCompatActivity {
         }
 
 
-
-
-
     }
-
-
 
 
     @Override
@@ -171,11 +163,11 @@ public class DuoActivity extends AppCompatActivity {
 
 
 
-                            currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()), selectedFriendId));
-                            otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()) * -1, auth.getCurrentUser().getUid()));
+                        currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()), selectedFriendId));
+                        otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()) * -1, auth.getCurrentUser().getUid()));
 
-                            myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
-                            myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
 
                     }else{
 
@@ -200,12 +192,12 @@ public class DuoActivity extends AppCompatActivity {
 
 
 
-                            currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()) * -1, selectedFriendId));
-                            otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()), auth.getCurrentUser().getUid()));
+                        currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()) * -1, selectedFriendId));
+                        otherUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()), auth.getCurrentUser().getUid()));
 
-                            myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
-                            myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
-                        }
+                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                        myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
+                    }
 
 
 
@@ -219,7 +211,6 @@ public class DuoActivity extends AppCompatActivity {
                 finish();
             }
         });
-
 
 
     }

@@ -7,23 +7,21 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/groupImage"
+        android:id="@+id/userImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/check_split" />
+        app:srcCompat="@drawable/check_split"
+        tools:layout_editor_absoluteY="0dp" />
 
     <TextView
-        android:id="@+id/groupName"
+        android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
-        android:text="TextView"
+        android:layout_marginTop="16dp"
+        android:text="USERNAME"
         android:textSize="25sp"
-        app:layout_constraintStart_toEndOf="@+id/groupImage"
+        app:layout_constraintStart_toEndOf="@+id/userImage"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

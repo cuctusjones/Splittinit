@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.Theme_Holo_Dialog_Alert));
                 builder.setMessage("Take or select picture?")
-                        .setCancelable(false)
+                        .setCancelable(true)
                         .setPositiveButton("Take picture", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

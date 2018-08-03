@@ -2,22 +2,17 @@ package com.example.jens.splittinit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.jens.splittinit.R;
-import com.example.jens.splittinit.model.Expense;
-import com.example.jens.splittinit.model.Group;
+import com.example.jens.splittinit.listAdapters.CustomList;
 import com.example.jens.splittinit.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,9 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tab2Group extends Fragment {
 
@@ -117,6 +110,15 @@ public class Tab2Group extends Fragment {
             }
         });
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick (AdapterView < ? > adapter, View view, int position, long arg){
+                Intent intent = new Intent(getActivity(), GroupSelected.class);
+                startActivity(intent);
+                }
+        });
+
+
 
     }
 
@@ -150,7 +152,7 @@ public class Tab2Group extends Fragment {
         String[] groupNameArray = new String[groupName.size()];
         groupNameArray = groupName.toArray(groupNameArray);
 
-        GroupList adapter = new GroupList(getActivity(), groupNameArray, groupImgArray);
+        CustomList adapter = new CustomList(getActivity(), groupNameArray, groupImgArray);
         list.setAdapter(adapter);
 
         /*list.setOnClickListener(new View.OnClickListener() {

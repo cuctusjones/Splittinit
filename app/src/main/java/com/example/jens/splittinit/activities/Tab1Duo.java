@@ -3,7 +3,6 @@ package com.example.jens.splittinit.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,15 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 
 import com.example.jens.splittinit.R;
+import com.example.jens.splittinit.listAdapters.CustomList;
 import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -178,7 +176,7 @@ public class Tab1Duo extends Fragment {
             }
         });
 
-        updateViews(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class));
+        //updateViews(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class));
     }
 
 

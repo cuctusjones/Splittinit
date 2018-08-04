@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,13 +106,13 @@ public class DuoActivity extends AppCompatActivity {
         email = (TextView) findViewById(R.id.email);
         name = (TextView) findViewById(R.id.name);
 
-        oweMoney = (EditText) findViewById(R.id.oweMoney);
+        oweMoney = (EditText) findViewById(R.id.titel);
         description = (EditText) findViewById(R.id.description);
 
         youOwe = (RadioButton) findViewById(R.id.youOwe);
         himOwe = (RadioButton) findViewById(R.id.himOwe);
 
-        profileImage = (ImageView) findViewById(R.id.profile_image);
+        profileImage = (ImageView) findViewById(R.id.groupImage);
 
         confirm = (Button) findViewById(R.id.confirm);
         amount = (EditText) findViewById(R.id.amount);

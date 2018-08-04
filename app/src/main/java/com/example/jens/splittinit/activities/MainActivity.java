@@ -1,16 +1,13 @@
 package com.example.jens.splittinit.activities;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -31,33 +27,26 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.jens.splittinit.R;
-import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -278,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         headerView = navigationView.getHeaderView(0);
 
-        profileImage = (CircleImageView) headerView.findViewById(R.id.profile_image);
+        profileImage = (CircleImageView) headerView.findViewById(R.id.groupImage);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -306,6 +295,10 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
             }
         });
+
+        //add profile picture to firebase
+        //mStorageRef
+
 
         revEmailField = (TextView) headerView.findViewById(R.id.email_field);
 
@@ -393,6 +386,24 @@ public class MainActivity extends AppCompatActivity {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                             // Log.d(TAG, String.valueOf(bitmap));
 
+                            /*Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
+                            StorageReference riversRef = storageRef.child("images/rivers.jpg");
+
+                            riversRef.putFile(file)
+                                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            // Get a URL to the uploaded content
+                                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Handle unsuccessful uploads
+                                            // ...
+                                        }
+                                    });*/
                             profileImage.setImageBitmap(bitmap);
                         } catch (IOException e) {
                             e.printStackTrace();

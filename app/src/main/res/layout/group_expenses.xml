@@ -12,32 +12,10 @@
         android:layout_width="113dp"
         android:layout_height="64dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/check_split" />
-
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="120dp"
-        android:text="EMAIL ADRESS"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="220dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/groupImage"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <EditText
         android:id="@+id/titel"
@@ -50,32 +28,6 @@
         android:text="Titel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/groupImage" />
-
-    <RadioGroup
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/titel"
-        app:layout_constraintTop_toBottomOf="@+id/groupImage">
-
-        <RadioButton
-            android:id="@+id/youOwe"
-            android:text="YOU OWE"
-            android:layout_width="match_parent"
-            android:layout_height="22dp"
-            android:onClick="onRadioButtonClicked"/>
-
-        <RadioButton
-            android:id="@+id/himOwe"
-            android:layout_width="match_parent"
-            android:layout_height="22dp"
-            android:text="HE/SHE OWES"
-            android:onClick="onRadioButtonClicked"/>
-
-    </RadioGroup>
 
     <EditText
         android:id="@+id/description"
@@ -106,19 +58,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titel" />
 
-    <Button
-        android:id="@+id/confirm"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
-        android:background="@color/white"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="Confirm"
+    <ListView
+        android:id="@+id/memberList"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description" />
+
+    <Button
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:text="Confirm"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memberList" />
 
 </android.support.constraint.ConstraintLayout>

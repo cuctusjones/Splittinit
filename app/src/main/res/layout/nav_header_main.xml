@@ -14,7 +14,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profile_image"
+        android:id="@+id/groupImage"
         android:layout_width="105dp"
         android:layout_height="105dp"
         android:layout_marginStart="8dp"
@@ -35,7 +35,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+        app:layout_constraintTop_toBottomOf="@+id/groupImage" />
 
     <TextView
         android:id="@+id/email_field"

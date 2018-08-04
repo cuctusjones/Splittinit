@@ -117,6 +117,27 @@ public class DuoActivity extends AppCompatActivity {
         confirm = (Button) findViewById(R.id.confirm);
         amount = (EditText) findViewById(R.id.amount);
 
+        oweMoney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                oweMoney.getText().clear();
+            }
+        });
+
+        amount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                oweMoney.getText().clear();
+            }
+        });
+
+        description.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                oweMoney.getText().clear();
+            }
+        });
+
         email.setText(selectedFriendEmail);
         if (null != selectedFriendEmail && selectedFriendEmail.length() > 0 )
         {

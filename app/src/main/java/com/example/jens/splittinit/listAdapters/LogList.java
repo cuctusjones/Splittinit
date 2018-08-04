@@ -15,7 +15,7 @@ public class LogList extends ArrayAdapter<String> {
     private final String[] logActivity;
 
     public LogList(Activity context,
-                     String[] web, Integer[] imageId) {
+                     String[] web) {
         super(context, R.layout.group_log, web);
         this.context = context;
         this.logActivity = web;

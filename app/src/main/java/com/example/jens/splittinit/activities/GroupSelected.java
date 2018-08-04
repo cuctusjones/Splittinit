@@ -12,6 +12,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.jens.splittinit.R;
+import com.example.jens.splittinit.listAdapters.GroupExpensesList;
+import com.example.jens.splittinit.listAdapters.GroupMemberList;
+import com.example.jens.splittinit.listAdapters.LogList;
 import com.example.jens.splittinit.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 public class GroupSelected extends AppCompatActivity {
 
@@ -36,6 +41,11 @@ public class GroupSelected extends AppCompatActivity {
     private DataSnapshot myDataSnapshot;
     private User currentUser;
 
+    public ArrayList<String> memberName;
+    public ArrayList<Integer> profilePicture;
+
+    public ArrayList<String> logEntry;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +54,8 @@ public class GroupSelected extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         initialize();
+
+        updateViews();
 
         // Write a message to the database
 
@@ -82,7 +94,63 @@ public class GroupSelected extends AppCompatActivity {
         });
     }
 
-        @Override
+    private void updateViews() {
+
+        //memberlist
+        profilePicture = new ArrayList<>();
+        memberName = new ArrayList<>();
+
+        //just for testing
+        memberName.add("Fukka1");
+        memberName.add("Fukka2");
+        memberName.add("Fukka3");
+        memberName.add("Fukka4");
+        memberName.add("Fukka5");
+
+        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
+        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
+        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
+        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
+        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
+        //just for testing
+
+
+        Integer [] profileImageArray = new Integer[profilePicture.size()];
+        profileImageArray = profilePicture.toArray(profileImageArray);
+
+        String[] memberNameArray = new String[memberName.size()];
+        memberNameArray = memberName.toArray(memberNameArray);
+
+
+        GroupMemberList adapter = new GroupMemberList(this, memberNameArray, profileImageArray);
+        listOfMembers.setAdapter(adapter);
+
+        //logList
+
+        logEntry = new ArrayList<>();
+
+        logEntry.add("Fukka fucked Fukka2");
+        logEntry.add("Fukka2 fucked Fukka3");
+        logEntry.add("Fukka3 fucked Fukka4");
+        logEntry.add("Fukka4 fucked Fukka5");
+        logEntry.add("Fukka fucked Fukka2");
+        logEntry.add("Fukka2 fucked Fukka3");
+        logEntry.add("Fukka3 fucked Fukka4");
+        logEntry.add("Fukka4 fucked Fukka5");
+        logEntry.add("Fukka fucked Fukka2");
+        logEntry.add("Fukka2 fucked Fukka3");
+        logEntry.add("Fukka3 fucked Fukka4");
+        logEntry.add("Fukka4 fucked Fukka5");
+
+        String[] logEntryArray = new String[logEntry.size()];
+        logEntryArray = logEntry.toArray(logEntryArray);
+
+        LogList adapter2 = new LogList(this, logEntryArray);
+        log.setAdapter(adapter2);
+
+    }
+
+    @Override
         public void onStart () {
             super.onStart();
 

@@ -114,7 +114,9 @@ public class Tab2Group extends Fragment {
             @Override
             public void onItemClick (AdapterView < ? > adapter, View view, int position, long arg){
                 Intent intent = new Intent(getActivity(), GroupSelected.class);
+                intent.putExtra("groupID", list.getSelectedItemPosition());
                 startActivity(intent);
+
                 }
         });
 

@@ -1,7 +1,6 @@
 package com.example.jens.splittinit.listAdapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.jens.splittinit.R;
-import com.example.jens.splittinit.activities.Tab2Group;
-
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GroupList extends ArrayAdapter<String> {
 
@@ -35,7 +29,7 @@ public class GroupList extends ArrayAdapter<String> {
         View rowView= inflater.inflate(R.layout.group_list, null, true);
         TextView groupName = (TextView) rowView.findViewById(R.id.groupName);
 
-        ImageView groupImage = (ImageView) rowView.findViewById(R.id.groupImage);
+        ImageView groupImage = (ImageView) rowView.findViewById(R.id.profileImage);
 
 
         groupName.setText(web[position]);

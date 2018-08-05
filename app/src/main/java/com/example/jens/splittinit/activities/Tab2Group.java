@@ -1,7 +1,10 @@
 package com.example.jens.splittinit.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,16 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.CustomList;
 import com.example.jens.splittinit.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -47,6 +58,8 @@ public class Tab2Group extends Fragment {
         //initializing stuff
         initialize(rootView);
         //updateViews();
+
+        // Write a message to the database
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
@@ -80,6 +93,8 @@ public class Tab2Group extends Fragment {
 
         return rootView;
     }
+
+
 
     @Override
     public void onStart() {

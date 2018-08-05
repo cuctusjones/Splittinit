@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class GroupExpenses extends AppCompatActivity{
 
-    public EditText titel, description, amount;
+    public EditText title, description, amount;
     public ImageView groupImage;
     public ListView memberList;
     public Button confirm;
@@ -23,6 +23,18 @@ public class GroupExpenses extends AppCompatActivity{
     public ArrayList<Integer> profilePicture;
     public ArrayList<String> memberName;
 
+    @Override
+    public void onStart(){
+        super.onStart();
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         // call the super class onCreate to complete the creation of activity like
         // the view hierarchy
@@ -70,10 +82,10 @@ public class GroupExpenses extends AppCompatActivity{
     private void initialize() {
         setContentView(R.layout.group_expenses);
 
-        titel = findViewById(R.id.titel);
+        title = findViewById(R.id.titel);
         description = findViewById(R.id.description);
         amount = findViewById(R.id.amount);
-        groupImage = findViewById(R.id.groupImage);
+        groupImage = findViewById(R.id.profileImage);
         memberList = findViewById(R.id.memberList);
         confirm = findViewById(R.id.confirm);
 

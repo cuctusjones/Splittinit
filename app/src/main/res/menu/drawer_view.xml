@@ -20,7 +20,7 @@
             <menu>
                 <item android:id="@+id/add_friend"
                     android:icon="@drawable/ic_add_black_24dp"
-                    android:checkable="true"
+                    android:checkable="false"
                     android:onClick="addFriend"
                     android:title="Add friend" />
 
@@ -32,6 +32,16 @@
 
             </menu>
         </item>
+
+        <item android:title="friend list"
+            android:id="@id/friendlist">
+            <menu android:id="@+id/friendlist">
+
+
+            </menu>
+        </item>
+
+
 
     </group>
 </menu>

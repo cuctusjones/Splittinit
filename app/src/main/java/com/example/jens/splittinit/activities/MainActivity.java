@@ -1,11 +1,13 @@
 package com.example.jens.splittinit.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -29,6 +31,8 @@ import android.view.View;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +43,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import android.widget.EditText;
 import android.widget.TextView;
@@ -47,6 +53,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -77,12 +84,12 @@ public class MainActivity extends AppCompatActivity {
     public FloatingActionButton fab;
 
     public MenuItem owing, getting, add_friend, add_group;
+    public Menu friendlist;
     public CircleImageView profileImage;
 
 
-    private int TAKE_IMAGE =0;
-    private int PICK_IMAGE_REQUEST =1;
-
+    private int TAKE_IMAGE = 0;
+    private int PICK_IMAGE_REQUEST = 1;
 
 
     private DrawerLayout mDrawerLayout;
@@ -116,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentUser = value;
-                myDataSnapshot=dataSnapshot;
+                myDataSnapshot = dataSnapshot;
                 //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
                 Log.d("login", "Value is: " + value);
             }
@@ -201,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         owing = (MenuItem) findViewById(R.id.owing);
         getting = (MenuItem) findViewById(R.id.getting);
 
-
+        friendlist = findViewById(R.id.friendlist);
 
 
         //add_friend.setEnabled(false);
@@ -242,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 });*/
 
 
-
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.mViewPager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -258,8 +264,6 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
 
-
-
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -267,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         headerView = navigationView.getHeaderView(0);
 
-        profileImage = (CircleImageView) headerView.findViewById(R.id.groupImage);
+        profileImage = (CircleImageView) headerView.findViewById(R.id.profileImage);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -353,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentUser = value;
-                myDataSnapshot=dataSnapshot;
+                myDataSnapshot = dataSnapshot;
                 //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
                 Log.d("login", "Value is: " + value);
             }
@@ -370,47 +374,70 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-                if (requestCode == TAKE_IMAGE && resultCode == RESULT_OK){
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    profileImage.setImageBitmap(imageBitmap);
+        if (requestCode == TAKE_IMAGE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            uploadImage(data.getData());
+            profileImage.setImageBitmap(imageBitmap);
 
+        }
+
+        if (requestCode == PICK_IMAGE_REQUEST) {
+            if (resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+                Uri uri = data.getData();
+
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    profileImage.setImageBitmap(bitmap);
+                    uploadImage(data.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                if (requestCode == PICK_IMAGE_REQUEST){
-                    if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-                        Uri uri = data.getData();
+        }
+    }
 
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            // Log.d(TAG, String.valueOf(bitmap));
+    private StorageReference getImage() {
+        StorageReference profilePicture = mStorageRef.child("profileImages/" + auth.getCurrentUser().getUid());
+        return profilePicture;
+    }
 
-                            /*Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
-                            StorageReference riversRef = storageRef.child("images/rivers.jpg");
+    private void uploadImage(Uri filePath) {
 
-                            riversRef.putFile(file)
-                                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            // Get a URL to the uploaded content
-                                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-                                            // Handle unsuccessful uploads
-                                            // ...
-                                        }
-                                    });*/
-                            profileImage.setImageBitmap(bitmap);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+        if (filePath != null) {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+
+            StorageReference ref = mStorageRef.child("profileImages/" + auth.getCurrentUser().getUid());
+            ref.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                        }
+                    });
         }
     }
 
@@ -419,8 +446,25 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        friendlist = findViewById(R.id.friendlist);
+        /*MenuItem test = menu.add(Menu.NONE,3,Menu.NONE,"Test#");
+        friendlist.add(test);
+
+        if(friendlist != null) {
+            friendlist.add("Test");
+        }*/
+
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -450,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //method to show dialog when adding a friend
-    public void addFriend(MenuItem item){
+    public void addFriend(MenuItem item) {
         final EditText taskEditText = new EditText(MainActivity.this);
         AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.Theme_Holo_Dialog_Alert))
                 .setTitle("Add a new friend")
@@ -461,50 +505,40 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String task = taskEditText.getText().toString();
 
-                                String friendid="";
+                        String friendid = "";
 
-                                for(int i =0;i<myDataSnapshot.child("emailid").getChildrenCount();i++){
-                                    if(myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class).equals(task)){
-                                        friendid = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class);
-                                    }
-                                }
+                        for (int i = 0; i < myDataSnapshot.child("emailid").getChildrenCount(); i++) {
+                            if (myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class).equals(task)) {
+                                friendid = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class);
+                            }
+                        }
 
-                                if(friendid.equals("")){
-                                    Toast.makeText(MainActivity.this, "not found",
+                        if (friendid.equals("")) {
+                            Toast.makeText(MainActivity.this, "not found",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            User currentUser = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+                            User otherUser = myDataSnapshot.child("users").child(friendid).getValue(User.class);
+
+                            ArrayList<String> myfriends = currentUser.getFriends();
+                            ArrayList<String> hisfriends = otherUser.getFriends();
+
+                            for (String s : myfriends) {
+                                if (s.equals(friendid)) {
+                                    Toast.makeText(MainActivity.this, "you're already friends",
                                             Toast.LENGTH_SHORT).show();
-                                }else{
-                                    User currentUser = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
-                                    User otherUser = myDataSnapshot.child("users").child(friendid).getValue(User.class);
-
-                                    ArrayList<String> myfriends = currentUser.getFriends();
-                                    ArrayList<String> hisfriends = otherUser.getFriends();
-
-                                    for(String s : myfriends){
-                                        if(s.equals(friendid)){
-                                            Toast.makeText(MainActivity.this, "you're already friends",
-                                                    Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                    }
-
-
-                                    myfriends.add(friendid);
-                                    hisfriends.add(auth.getCurrentUser().getUid());
-                                    myRef.child("users").child(auth.getCurrentUser().getUid()).child("friends").setValue(myfriends);
-                                    myRef.child("users").child(friendid).child("friends").setValue(hisfriends);
-                                    Toast.makeText(MainActivity.this, "you're friends now wuhuu!",
-                                            Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
+                            }
 
 
-
-
-
-
-
-
-
-
+                            myfriends.add(friendid);
+                            hisfriends.add(auth.getCurrentUser().getUid());
+                            myRef.child("users").child(auth.getCurrentUser().getUid()).child("friends").setValue(myfriends);
+                            myRef.child("users").child(friendid).child("friends").setValue(hisfriends);
+                            Toast.makeText(MainActivity.this, "you're friends now wuhuu!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
 
                     }

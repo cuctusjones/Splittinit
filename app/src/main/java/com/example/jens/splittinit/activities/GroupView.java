@@ -1,7 +1,6 @@
 package com.example.jens.splittinit.activities;
 
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +17,7 @@ public class GroupView extends AppCompatActivity {
 
         setContentView(R.layout.group_view);
 
-        groupImage = (ImageView) findViewById(R.id.groupImage);
+        groupImage = (ImageView) findViewById(R.id.profileImage);
         groupName = (TextView) findViewById(R.id.groupName);
 
 

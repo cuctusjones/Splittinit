@@ -112,31 +112,11 @@ public class DuoActivity extends AppCompatActivity {
         youOwe = (RadioButton) findViewById(R.id.youOwe);
         himOwe = (RadioButton) findViewById(R.id.himOwe);
 
-        profileImage = (ImageView) findViewById(R.id.groupImage);
+        profileImage = (ImageView) findViewById(R.id.profileImage);
 
         confirm = (Button) findViewById(R.id.confirm);
         amount = (EditText) findViewById(R.id.amount);
 
-        oweMoney.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                oweMoney.getText().clear();
-            }
-        });
-
-        amount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                oweMoney.getText().clear();
-            }
-        });
-
-        description.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                oweMoney.getText().clear();
-            }
-        });
 
         email.setText(selectedFriendEmail);
         if (null != selectedFriendEmail && selectedFriendEmail.length() > 0 )

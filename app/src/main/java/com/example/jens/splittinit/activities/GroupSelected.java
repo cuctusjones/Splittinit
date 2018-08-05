@@ -1,21 +1,30 @@
 package com.example.jens.splittinit.activities;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jens.splittinit.R;
-import com.example.jens.splittinit.listAdapters.GroupExpensesList;
 import com.example.jens.splittinit.listAdapters.GroupMemberList;
 import com.example.jens.splittinit.listAdapters.LogList;
 import com.example.jens.splittinit.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,14 +32,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GroupSelected extends AppCompatActivity {
 
     public TextView groupName, debt;
-    public ImageView groupImage;
+    public CircleImageView groupImage;
     public ListView listOfMembers, log;
     public FloatingActionButton fab;
 
@@ -45,6 +59,9 @@ public class GroupSelected extends AppCompatActivity {
     public ArrayList<Integer> profilePicture;
 
     public ArrayList<String> logEntry;
+
+    private int TAKE_IMAGE = 0;
+    private int PICK_IMAGE_REQUEST = 1;
 
 
     @Override
@@ -65,9 +82,6 @@ public class GroupSelected extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
 
-
-
-
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -81,7 +95,7 @@ public class GroupSelected extends AppCompatActivity {
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentUser = value;
-                myDataSnapshot=dataSnapshot;
+                myDataSnapshot = dataSnapshot;
 
                 Log.d("login", "Value is: " + value);
             }
@@ -92,6 +106,73 @@ public class GroupSelected extends AppCompatActivity {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
+    }
+
+    public void changeGroupIcon(View view){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Theme_Holo_Dialog_Alert));
+            builder.setMessage("Take or select picture?")
+                    .setCancelable(true)
+                    .setPositiveButton("Take picture", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(takePictureIntent, TAKE_IMAGE);
+                            }
+                        }
+                    })
+                    .setNegativeButton("Select picture", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+    }
+
+    private StorageReference getImage() {
+        StorageReference profilePicture = mStorageRef.child("profileImages/" + auth.getCurrentUser().getUid());
+        return profilePicture;
+    }
+
+
+    private void uploadImage(Uri filePath) {
+
+        if (filePath != null) {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+
+            StorageReference ref = mStorageRef.child("groupImages/" + auth.getCurrentUser().getUid());
+            ref.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(GroupSelected.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(GroupSelected.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+                        }
+                    });
+        }
     }
 
     private void updateViews() {
@@ -115,7 +196,7 @@ public class GroupSelected extends AppCompatActivity {
         //just for testing
 
 
-        Integer [] profileImageArray = new Integer[profilePicture.size()];
+        Integer[] profileImageArray = new Integer[profilePicture.size()];
         profileImageArray = profilePicture.toArray(profileImageArray);
 
         String[] memberNameArray = new String[memberName.size()];
@@ -151,35 +232,82 @@ public class GroupSelected extends AppCompatActivity {
     }
 
     @Override
-        public void onStart () {
-            super.onStart();
+    public void onStart() {
+        super.onStart();
+
+        //groupImage.setImageResource(R.drawable.check_split);
 
 
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(GroupSelected.this, GroupExpenses.class));
-                }
-            });
-
-            //TODO: Jens change mal den Gruppenname und das Icon von der Gruppen, ty
-            //change groupname accordingly
-            //groupName.setText(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("name").getValue(String.class));
-
-        }
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(GroupSelected.this, GroupExpenses.class));
+            }
+        });
 
 
-        private void initialize () {
-            setContentView(R.layout.group_selected);
-
-            groupImage = findViewById(R.id.groupImage);
-            groupName = findViewById(R.id.groupName);
-            debt = findViewById(R.id.debt);
-            listOfMembers = findViewById(R.id.memberList);
-            log = findViewById(R.id.log);
-            fab = findViewById(R.id.fab);
-
-        }
+        //change groupname accordingly
+        //groupName.setText(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("name").getValue(String.class));
 
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_CANCELED && requestCode == TAKE_IMAGE) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            uploadImage(data.getData());
+            groupImage.setImageBitmap(imageBitmap);
+
+        }
+        if (resultCode != RESULT_CANCELED) {
+            if (requestCode == PICK_IMAGE_REQUEST) {
+
+                Uri uri = data.getData();
+
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    groupImage.setImageBitmap(bitmap);
+                    uploadImage(data.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
+    }
+
+    public void addMember(View view) {
+        final EditText taskEditText = new EditText(GroupSelected.this);
+        AlertDialog dialog = new AlertDialog.Builder(new ContextThemeWrapper(GroupSelected.this, R.style.Theme_Holo_Dialog_Alert))
+                .setTitle("Who do you want to add?")
+                .setMessage("Enter E-Mail")
+                .setView(taskEditText)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = String.valueOf(taskEditText.getText());
+
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+    }
+
+
+    private void initialize() {
+        setContentView(R.layout.group_selected);
+
+        groupImage = findViewById(R.id.groupImg);
+        groupName = findViewById(R.id.groupName);
+        debt = findViewById(R.id.debt);
+        listOfMembers = findViewById(R.id.memberList);
+        log = findViewById(R.id.log);
+        fab = findViewById(R.id.fab);
+
+    }
+
+}
 

@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/groupImage"
+        android:id="@+id/profileImage"
         android:layout_width="113dp"
         android:layout_height="64dp"
         android:layout_marginStart="16dp"
@@ -25,9 +25,9 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Titel"
+        android:hint="titel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groupImage" />
+        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
     <EditText
         android:id="@+id/description"
@@ -38,7 +38,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="description"
+        android:hint="description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="amount"
+        android:hint="amount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titel" />

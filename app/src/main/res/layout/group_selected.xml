@@ -7,17 +7,19 @@
     android:layout_height="match_parent"
     android:background="@color/input_register_bg">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/groupImg"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
+        android:onClick="changeGroupIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/check_split" />
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        android:src="@drawable/umbrella"/>
 
     <TextView
         android:id="@+id/groupName"
@@ -45,7 +47,10 @@
         android:id="@+id/memberList"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/debt" />
 
@@ -53,7 +58,10 @@
         android:id="@+id/log"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memberList" />
 
@@ -79,6 +87,7 @@
         android:background="@null"
         android:padding="0dp"
         android:scaleType="fitCenter"
+        android:onClick="addMember"
         android:src="@drawable/add_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

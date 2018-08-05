@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
     public FloatingActionButton fab;
 
     public MenuItem owing, getting, add_friend, add_group;
-    public Menu friendlist;
     public CircleImageView profileImage;
 
 
@@ -208,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
         owing = (MenuItem) findViewById(R.id.owing);
         getting = (MenuItem) findViewById(R.id.getting);
 
-        friendlist = findViewById(R.id.friendlist);
 
 
         //add_friend.setEnabled(false);
@@ -453,7 +451,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        friendlist = findViewById(R.id.friendlist);
         /*MenuItem test = menu.add(Menu.NONE,3,Menu.NONE,"Test#");
         friendlist.add(test);
 
@@ -472,6 +469,11 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(id == R.id.friendlist){
+            Intent intent = new Intent(this, FriendList.class);
+            startActivity(intent);
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

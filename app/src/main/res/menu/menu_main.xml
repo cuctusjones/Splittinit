@@ -12,8 +12,11 @@
     <item
         android:id="@+id/action_logout"
         android:title="@string/action_logout"
-
-
     />
+
+    <item
+        android:id="@+id/friendlist"
+        android:title="friend list"
+        />
 
 </menu>

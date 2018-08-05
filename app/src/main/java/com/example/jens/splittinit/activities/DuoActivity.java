@@ -29,6 +29,7 @@ public class DuoActivity extends AppCompatActivity {
     public TextView email, name;
     public EditText oweMoney, description, amount;
     public RadioButton youOwe, himOwe;
+    public boolean whoOwe = false; //true -> you false -> him
     public ImageView profileImage;
     public Button confirm;
     private String selectedFriendEmail;
@@ -63,8 +64,6 @@ public class DuoActivity extends AppCompatActivity {
                 otherUserExpenses = other.getExpenses();
 
 
-
-
                 Log.d("login", "Value is: " + value);
             }
 
@@ -78,7 +77,7 @@ public class DuoActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
-            if(extras == null) {
+            if (extras == null) {
                 selectedFriendEmail = null;
             } else {
                 selectedFriendEmail = extras.getString("selectedFriend");
@@ -139,37 +138,31 @@ public class DuoActivity extends AppCompatActivity {
         });
 
         email.setText(selectedFriendEmail);
-        if (null != selectedFriendEmail && selectedFriendEmail.length() > 0 )
-        {
+        if (null != selectedFriendEmail && selectedFriendEmail.length() > 0) {
             int endIndex = selectedFriendEmail.lastIndexOf("@");
-            if (endIndex != -1)
-            {
+            if (endIndex != -1) {
                 selectedFriendName = selectedFriendEmail.substring(0, endIndex); // not forgot to put check if(endIndex != -1)
             }
         }
         name.setText(selectedFriendName);
 
 
-
-
-
-
         // this code very nice i think
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if(isValid()){
-                    if(youOwe.isSelected()){
-                        for(Expense e : currentUserExpenses){
-                            if(e.getFriendid().equals(selectedFriendId)){
-                                e.setValue(e.getValue()+Integer.parseInt(amount.getText().toString()));
+                if (isValid()) {
+                    if (whoOwe) {
+                        for (Expense e : currentUserExpenses) {
+                            if (e.getFriendid().equals(selectedFriendId)) {
+                                e.setValue(e.getValue() + Integer.parseInt(amount.getText().toString()));
                                 System.out.println(amount.getText().toString());
 
                                 myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
 
-                                for(Expense ex : otherUserExpenses){
-                                    if(ex.getFriendid().equals(auth.getCurrentUser().getUid())){
-                                        ex.setValue(ex.getValue()+ (Integer.parseInt(amount.getText().toString())*-1));
+                                for (Expense ex : otherUserExpenses) {
+                                    if (ex.getFriendid().equals(auth.getCurrentUser().getUid())) {
+                                        ex.setValue(ex.getValue() + (Integer.parseInt(amount.getText().toString()) * -1));
                                         myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
                                     }
                                 }
@@ -178,9 +171,6 @@ public class DuoActivity extends AppCompatActivity {
 
                             }
                         }
-
-
-
 
 
                         currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()), selectedFriendId));
@@ -189,17 +179,17 @@ public class DuoActivity extends AppCompatActivity {
                         myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
                         myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
 
-                    }else{
+                    } else {
 
-                        for(Expense e : currentUserExpenses){
-                            if(e.getFriendid().equals(selectedFriendId)){
-                                e.setValue(e.getValue()+(Integer.parseInt(amount.getText().toString())*(-1)));
+                        for (Expense e : currentUserExpenses) {
+                            if (e.getFriendid().equals(selectedFriendId)) {
+                                e.setValue(e.getValue() + (Integer.parseInt(amount.getText().toString()) * (-1)));
 
                                 myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
 
-                                for(Expense ex : otherUserExpenses){
-                                    if(ex.getFriendid().equals(auth.getCurrentUser().getUid())){
-                                        ex.setValue(ex.getValue()+ (Integer.parseInt(amount.getText().toString())));
+                                for (Expense ex : otherUserExpenses) {
+                                    if (ex.getFriendid().equals(auth.getCurrentUser().getUid())) {
+                                        ex.setValue(ex.getValue() + (Integer.parseInt(amount.getText().toString())));
                                         myRef.child("users").child(selectedFriendId).child("expenses").setValue(otherUserExpenses);
                                     }
                                 }
@@ -208,8 +198,6 @@ public class DuoActivity extends AppCompatActivity {
 
                             }
                         }
-
-
 
 
                         currentUserExpenses.add(new Expense(Integer.parseInt(amount.getText().toString()) * -1, selectedFriendId));
@@ -220,9 +208,7 @@ public class DuoActivity extends AppCompatActivity {
                     }
 
 
-
-
-                }else{
+                } else {
                     Toast.makeText(DuoActivity.this, "invalid input try again!",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -236,17 +222,17 @@ public class DuoActivity extends AppCompatActivity {
     }
 
     private boolean isValid() {
-        if(name.getText().toString().equals("Titel")){
+        if (name.getText().toString().equals("Titel")) {
             Toast.makeText(DuoActivity.this, "enter title",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        if(description.getText().toString().equals("description")) {
+        if (description.getText().toString().equals("description")) {
             Toast.makeText(DuoActivity.this, "enter description",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        if(!isInteger(amount.getText().toString())){
+        if (!isInteger(amount.getText().toString())) {
             Toast.makeText(DuoActivity.this, "enter valid amount",
                     Toast.LENGTH_LONG).show();
             return false;
@@ -256,24 +242,42 @@ public class DuoActivity extends AppCompatActivity {
     }
 
     public static boolean isInteger(String s) {
-        return isInteger(s,10);
+        return isInteger(s, 10);
     }
 
     public static boolean isInteger(String s, int radix) {
-        if(s.isEmpty()) return false;
-        for(int i = 0; i < s.length(); i++) {
-            if(i == 0 && s.charAt(i) == '-') {
-                if(s.length() == 1) return false;
+        if (s.isEmpty()) return false;
+        for (int i = 0; i < s.length(); i++) {
+            if (i == 0 && s.charAt(i) == '-') {
+                if (s.length() == 1) return false;
                 else continue;
             }
-            if(Character.digit(s.charAt(i),radix) < 0) return false;
+            if (Character.digit(s.charAt(i), radix) < 0) return false;
         }
         return true;
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
     }
 
+    public void onRadioButtonClicked(View view) {
+
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.youOwe:
+                if (checked)
+                    // Pirates are the best
+                    whoOwe = true;
+
+                break;
+            case R.id.himOwe:
+                if (checked)
+                    whoOwe = false;
+                break;
+        }
+    }
 }

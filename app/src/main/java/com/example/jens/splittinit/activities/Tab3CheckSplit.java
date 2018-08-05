@@ -45,12 +45,14 @@ public class Tab3CheckSplit extends Fragment {
         computeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double tip = tipNumberPicker.getValue()/100;
-                double numberOfPpl = pplNumberPicker.getValue();
-                double invoiceAmount = Double.parseDouble(checkAmount.getText().toString());
-               double tmp = (float)Math.round(((((invoiceAmount*tip) + invoiceAmount) / numberOfPpl) * 100) / 100);
-               String amount = Double.toString(tmp);
-               splittedValue.setText(amount + "€");
+                if(checkAmount.getText() == null) {
+                    double tip = tipNumberPicker.getValue() / 100;
+                    double numberOfPpl = pplNumberPicker.getValue();
+                    double invoiceAmount = Double.parseDouble(checkAmount.getText().toString());
+                    double tmp = (float) Math.round(((((invoiceAmount * tip) + invoiceAmount) / numberOfPpl) * 100) / 100);
+                    String amount = Double.toString(tmp);
+                    splittedValue.setText(amount + "€");
+                }
             }
         });
     }

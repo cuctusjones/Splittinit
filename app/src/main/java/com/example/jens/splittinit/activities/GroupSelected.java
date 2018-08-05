@@ -109,11 +109,7 @@ public class GroupSelected extends AppCompatActivity {
 
                 groupArrayList=groups;
 
-                memberIds = new ArrayList<String>();
-                for(int i =0;i<dataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getChildrenCount();i++){
-                    memberIds.add(dataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("members").child(Integer.toString(i)).getValue(String.class));
 
-                }
 
 
 
@@ -358,6 +354,14 @@ public class GroupSelected extends AppCompatActivity {
 
                         String friendid = "";
 
+                        memberIds = new ArrayList<String>();
+                        for(int i =0;i<myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getChildrenCount();i++){
+                            memberIds.add(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("members").child(Integer.toString(i)).getValue(String.class));
+
+                        }
+
+
+
                         for (int i = 0; i < myDataSnapshot.child("emailid").getChildrenCount(); i++) {
                             if (myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class).equals(task)) {
                                 friendid = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class);
@@ -369,18 +373,49 @@ public class GroupSelected extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }else{
                             if(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID",0))).hasChild("members")){
-                                for(String s : memberIds){
-                                    if(s.equals(friendid)){
-                                        Toast.makeText(GroupSelected.this, "already a member",
-                                                Toast.LENGTH_SHORT).show();
-                                        return;
+                            Toast.makeText(GroupSelected.this,memberIds.get(0),
+                                    Toast.LENGTH_SHORT).show();
+                                for(int i=0;i<memberIds.size();i++){
+                                    if(memberIds.get(i)!=null){
+                                        if(memberIds.get(i).equals(friendid)){
+                                            Toast.makeText(GroupSelected.this, "already a member",
+                                                    Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
                                     }
+
 
                                 }
 
                             }
-                            memberIds.add(friendid);
-                            myRef.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID",0))).child("members").setValue(memberIds);
+                            //memberIds.add(friendid);
+                            String memberId = "";
+                            memberId=Long.toString(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID",0))).child("members").getChildrenCount());
+                            myRef.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID",0))).child("members").child(memberId).setValue(friendid);
+
+
+                            User addedUser = myDataSnapshot.child("users").child(friendid).getValue(User.class);
+
+                            if(addedUser.getGroups()!=null){
+                                for(String grp :addedUser.getGroups()){
+                                    if(grp.equals(Integer.toString(getIntent().getIntExtra("groupID",0)))){
+
+                                        return;
+                                    }
+                                }
+                                addedUser.getGroups().add(Integer.toString(getIntent().getIntExtra("groupID",0)));
+                                myRef.child("users").child(friendid).setValue(addedUser);
+                            }else{
+                                ArrayList<String> gr = new ArrayList<>();
+
+
+                                gr.add(Integer.toString(getIntent().getIntExtra("groupID",0)));
+                                addedUser.setGroups(gr);
+                                myRef.child("users").child(friendid).setValue(addedUser);
+                                }
+
+
+
 
                         }
 

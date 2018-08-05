@@ -6,7 +6,7 @@ import java.util.List;
 public class Group {
 
 
-    private List<String> memberIds;
+    private List<String> members;
 
     public String getName() {
         return name;
@@ -19,8 +19,8 @@ public class Group {
     private String name;
 
 
-    public Group(List<String> memberIds, String name) {
-        this.memberIds = memberIds;
+    public Group(List<String> members, String name) {
+        this.members = members;
         this.name = name;
     }
 
@@ -29,15 +29,15 @@ public class Group {
     }
     public Group(String name){
         this.name = name;
-        memberIds = new ArrayList<>();
+        members = new ArrayList<>();
     }
 
 
-    public List<String> getMemberIds() {
-        return memberIds;
+    public List<String> getMembers() {
+        return members;
     }
 
-    public void setMemberIds(List<String> memberIds) {
-        this.memberIds = memberIds;
+    public void setMembers(List<String> members) {
+        this.members = members;
     }
 }

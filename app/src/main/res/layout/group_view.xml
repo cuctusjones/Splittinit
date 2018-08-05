@@ -6,7 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
         android:id="@+id/profileImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -14,7 +17,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/check_split" />
+        android:src="@drawable/check_split" />
 
     <TextView
         android:id="@+id/groupName"

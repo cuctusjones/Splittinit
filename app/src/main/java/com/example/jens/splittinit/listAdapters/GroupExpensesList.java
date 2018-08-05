@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.jens.splittinit.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupExpensesList extends ArrayAdapter<String> {
 
     private final Activity context;
@@ -31,7 +33,7 @@ public class GroupExpensesList extends ArrayAdapter<String> {
         View rowView= inflater.inflate(R.layout.group_checkbox_list, null, true);
         CheckBox memberName = rowView.findViewById(R.id.memberName);
 
-        ImageView profilePicture = (ImageView) rowView.findViewById(R.id.profileImage);
+        CircleImageView profilePicture = rowView.findViewById(R.id.profileImage);
 
 
         memberName.setText(web[position]);

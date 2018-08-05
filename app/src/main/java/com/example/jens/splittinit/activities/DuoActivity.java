@@ -24,13 +24,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DuoActivity extends AppCompatActivity {
 
     public TextView email, name;
     public EditText oweMoney, description, amount;
     public RadioButton youOwe, himOwe;
     public boolean whoOwe = false; //true -> you false -> him
-    public ImageView profileImage;
+    public CircleImageView profileImage;
     public Button confirm;
     private String selectedFriendEmail;
     private String selectedFriendName;
@@ -111,7 +113,7 @@ public class DuoActivity extends AppCompatActivity {
         youOwe = (RadioButton) findViewById(R.id.youOwe);
         himOwe = (RadioButton) findViewById(R.id.himOwe);
 
-        profileImage = (ImageView) findViewById(R.id.profileImage);
+        profileImage = findViewById(R.id.profileImage);
 
         confirm = (Button) findViewById(R.id.confirm);
         amount = (EditText) findViewById(R.id.amount);

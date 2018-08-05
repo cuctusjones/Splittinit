@@ -15,6 +15,8 @@ import com.example.jens.splittinit.activities.Tab2Group;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupMemberList extends ArrayAdapter<String> {
 
     private final Activity context;
@@ -35,7 +37,7 @@ public class GroupMemberList extends ArrayAdapter<String> {
         View rowView= inflater.inflate(R.layout.member_view_group_list, null, true);
         TextView userName = (TextView) rowView.findViewById(R.id.userName);
 
-        ImageView userImage = (ImageView) rowView.findViewById(R.id.userImage);
+        CircleImageView userImage = rowView.findViewById(R.id.userImage);
 
 
         userName.setText(web[position]);

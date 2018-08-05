@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.jens.splittinit.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CustomList extends ArrayAdapter<String>{
 
     private final Activity context;
@@ -28,7 +30,7 @@ public class CustomList extends ArrayAdapter<String>{
         View rowView= inflater.inflate(R.layout.list_single, null, true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
 
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
+        CircleImageView imageView = rowView.findViewById(R.id.img);
         txtTitle.setText(web[position]);
 
         imageView.setImageResource(imageId[position]);

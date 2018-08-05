@@ -17,6 +17,16 @@ public class User {
     private ArrayList<String> friends;
     private ArrayList<Expense> expenses;
 
+    public ArrayList<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<String> groups) {
+        this.groups = groups;
+    }
+
+    private ArrayList<String> groups;
+
 
 
 

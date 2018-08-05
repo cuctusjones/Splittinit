@@ -53,7 +53,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -567,8 +566,18 @@ public class MainActivity extends AppCompatActivity {
                         String task = String.valueOf(taskEditText.getText());
 
                         Group newGroup = new Group(task);
+                        ArrayList<String> memberIds = new ArrayList<>();
+                        memberIds.add(auth.getCurrentUser().getUid());
+                        newGroup.setMembers(memberIds);
                         int id = (int) myDataSnapshot.child("groups").getChildrenCount();
                         myRef.child("groups").child(Integer.toString(id)).setValue(newGroup);
+                        ArrayList<String> groups = new ArrayList<>();
+                        for(int i = 0; i<myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").getChildrenCount();i++){
+                            groups.add(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").child(Integer.toString(i)).getValue(String.class));
+                        }
+                        groups.add(Integer.toString(id));
+                        myRef.child("users").child(auth.getCurrentUser().getUid()).child("groups").setValue(groups);
+
 
 
                     }

@@ -131,7 +131,9 @@ public class Tab2Group extends Fragment {
             @Override
             public void onItemClick (AdapterView < ? > adapter, View view, int position, long arg){
                 Intent intent = new Intent(getActivity(), GroupSelected.class);
-                intent.putExtra("groupID",position);
+
+                int id = Integer.parseInt(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").child(Integer.toString(position)).getValue(String.class));
+                intent.putExtra("groupID",id);
                 startActivity(intent);
 
                 }
@@ -151,8 +153,11 @@ public class Tab2Group extends Fragment {
         groupName = new ArrayList<String>();
 
         if(myDataSnapshot!= null) {
-            for (int i = 0; i < myDataSnapshot.child("groups").getChildrenCount(); i++) {
-                groupName.add(myDataSnapshot.child("groups").child(Integer.toString(i)).child("name").getValue(String.class));
+            for (int i = 0; i < myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").getChildrenCount(); i++) {
+
+
+                String grID = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").child(Integer.toString(i)).getValue(String.class);
+                groupName.add(myDataSnapshot.child("groups").child(grID).child("name").getValue(String.class));
             }
         }
 

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.GroupMemberList;
 import com.example.jens.splittinit.listAdapters.LogList;
+import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,6 +49,8 @@ public class GroupSelected extends AppCompatActivity {
     public CircleImageView groupImage;
     public ListView listOfMembers, log;
     public FloatingActionButton fab;
+    public ImageButton addMember;
+
 
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -55,10 +59,14 @@ public class GroupSelected extends AppCompatActivity {
     private DataSnapshot myDataSnapshot;
     private User currentUser;
 
+    public ArrayList<String> memberIds;
     public ArrayList<String> memberName;
+
     public ArrayList<Integer> profilePicture;
 
     public ArrayList<String> logEntry;
+
+    public ArrayList<Group> groupArrayList;
 
     private int TAKE_IMAGE = 0;
     private int PICK_IMAGE_REQUEST = 1;
@@ -72,7 +80,7 @@ public class GroupSelected extends AppCompatActivity {
 
         initialize();
 
-        updateViews();
+
 
         // Write a message to the database
 
@@ -94,8 +102,27 @@ public class GroupSelected extends AppCompatActivity {
 
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
+                ArrayList<Group> groups = new ArrayList<Group>();
+                for(int i=0;i<dataSnapshot.child("groups").getChildrenCount();i++){
+                    groups.add(dataSnapshot.child("groups").child(Integer.toString(i)).getValue(Group.class));
+                }
+
+                groupArrayList=groups;
+
+                memberIds = new ArrayList<String>();
+                for(int i =0;i<dataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getChildrenCount();i++){
+                    memberIds.add(dataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("members").child(Integer.toString(i)).getValue(String.class));
+
+                }
+
+
+
+
+
                 currentUser = value;
                 myDataSnapshot = dataSnapshot;
+
+
 
                 Log.d("login", "Value is: " + value);
             }
@@ -106,6 +133,8 @@ public class GroupSelected extends AppCompatActivity {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
+
+        updateViews();
     }
 
     public void changeGroupIcon(View view){
@@ -229,6 +258,7 @@ public class GroupSelected extends AppCompatActivity {
         LogList adapter2 = new LogList(this, logEntryArray);
         log.setAdapter(adapter2);
 
+
     }
 
     @Override
@@ -245,9 +275,46 @@ public class GroupSelected extends AppCompatActivity {
             }
         });
 
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
+
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
+
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                /*if(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid())==null) {
+                    User user = new User(auth.getCurrentUser().getUid(), auth.getCurrentUser().getDisplayName(), null, auth.getCurrentUser().getEmail(), auth.getCurrentUser().getPhotoUrl());
+                    myRef.child("users").child(auth.getCurrentUser().getUid()).setValue(user);
+                }*/
+
+                User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
+
+
+
+                currentUser = value;
+                myDataSnapshot = dataSnapshot;
+
+
+                groupName.setText(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 2))).child("name").getValue(String.class));
+                updateViews();
+                Log.d("login", "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("login", "Failed to read value.", error.toException());
+            }
+        });
+
 
         //change groupname accordingly
         //groupName.setText(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("name").getValue(String.class));
+
+
 
     }
 
@@ -289,6 +356,38 @@ public class GroupSelected extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String task = String.valueOf(taskEditText.getText());
 
+                        String friendid = "";
+
+                        for (int i = 0; i < myDataSnapshot.child("emailid").getChildrenCount(); i++) {
+                            if (myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class).equals(task)) {
+                                friendid = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class);
+                            }
+                        }
+
+                        if (friendid.equals("")) {
+                            Toast.makeText(GroupSelected.this, "not found",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            if(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID",0))).hasChild("members")){
+                                for(String s : memberIds){
+                                    if(s.equals(friendid)){
+                                        Toast.makeText(GroupSelected.this, "already a member",
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                }
+
+                            }
+                            memberIds.add(friendid);
+                            myRef.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID",0))).child("members").setValue(memberIds);
+
+                        }
+
+
+
+
+
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -306,6 +405,8 @@ public class GroupSelected extends AppCompatActivity {
         listOfMembers = findViewById(R.id.memberList);
         log = findViewById(R.id.log);
         fab = findViewById(R.id.fab);
+        addMember = findViewById(R.id.addMember);
+
 
     }
 

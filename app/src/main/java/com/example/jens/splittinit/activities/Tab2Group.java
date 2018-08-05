@@ -101,6 +101,8 @@ public class Tab2Group extends Fragment {
 
         super.onStart();
 
+
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -129,11 +131,15 @@ public class Tab2Group extends Fragment {
             @Override
             public void onItemClick (AdapterView < ? > adapter, View view, int position, long arg){
                 Intent intent = new Intent(getActivity(), GroupSelected.class);
-                intent.putExtra("groupID", list.getSelectedItemPosition());
+                intent.putExtra("groupID",position);
                 startActivity(intent);
 
                 }
         });
+
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
+
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
 
 
 

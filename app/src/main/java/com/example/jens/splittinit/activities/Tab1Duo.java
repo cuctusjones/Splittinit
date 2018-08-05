@@ -53,6 +53,8 @@ public class Tab1Duo extends Fragment {
 
         super.onStart();
 
+
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -82,6 +84,10 @@ public class Tab1Duo extends Fragment {
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
+
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
+
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
 
 
     }

@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.jens.splittinit.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupList extends ArrayAdapter<String> {
 
     private final Activity context;
@@ -29,7 +31,7 @@ public class GroupList extends ArrayAdapter<String> {
         View rowView= inflater.inflate(R.layout.group_list, null, true);
         TextView groupName = (TextView) rowView.findViewById(R.id.groupName);
 
-        ImageView groupImage = (ImageView) rowView.findViewById(R.id.profileImage);
+        CircleImageView groupImage = rowView.findViewById(R.id.profileImage);
 
 
         groupName.setText(web[position]);

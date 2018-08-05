@@ -13,10 +13,12 @@ import com.example.jens.splittinit.listAdapters.GroupExpensesList;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class GroupExpenses extends AppCompatActivity{
 
     public EditText title, description, amount;
-    public ImageView groupImage;
+    public CircleImageView groupImage;
     public ListView memberList;
     public Button confirm;
 

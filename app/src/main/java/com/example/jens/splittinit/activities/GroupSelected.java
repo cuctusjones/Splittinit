@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -49,7 +50,7 @@ public class GroupSelected extends AppCompatActivity {
     public CircleImageView groupImage;
     public ListView listOfMembers, log;
     public FloatingActionButton fab;
-    public ImageButton addMember;
+    public Button addMember;
 
 
     FirebaseDatabase database;

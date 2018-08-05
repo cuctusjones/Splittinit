@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/input_register_bg">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/groupImg"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:onClick="changeGroupIcon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:civ_border_width="2dp"
+        android:src="@drawable/umbrella"
         app:civ_border_color="#FF000000"
-        android:src="@drawable/umbrella"/>
+        app:civ_border_width="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addMember" />
 
     <TextView
         android:id="@+id/groupName"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="16dp"
         android:text="Groupname"
         android:textSize="25sp"
         app:layout_constraintStart_toEndOf="@+id/groupImg"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/addMember" />
 
     <TextView
         android:id="@+id/debt"
@@ -46,7 +44,7 @@
     <ListView
         android:id="@+id/memberList"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="250dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -56,12 +54,12 @@
 
     <ListView
         android:id="@+id/log"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="0dp"
+        android:layout_height="106dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/fab"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memberList" />
 
@@ -73,22 +71,21 @@
         android:layout_margin="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/fab"
+        android:src="@drawable/circle_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/addMember"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="40dp"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
+        android:layout_marginTop="16dp"
         android:onClick="addMember"
-        android:src="@drawable/add_button"
+        android:text="add member"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:theme="@style/PrimaryButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,8 +106,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:textSize="25sp"
         android:text="€"
+        android:textSize="25sp"
         app:layout_constraintStart_toEndOf="@+id/debt"
         app:layout_constraintTop_toBottomOf="@+id/groupImg" />
 

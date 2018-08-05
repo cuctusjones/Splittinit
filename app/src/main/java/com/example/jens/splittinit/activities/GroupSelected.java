@@ -121,6 +121,7 @@ public class GroupSelected extends AppCompatActivity {
 
 
                 Log.d("login", "Value is: " + value);
+                updateViews();
             }
 
             @Override
@@ -130,7 +131,7 @@ public class GroupSelected extends AppCompatActivity {
             }
         });
 
-        updateViews();
+
     }
 
     public void changeGroupIcon(View view){
@@ -206,12 +207,32 @@ public class GroupSelected extends AppCompatActivity {
         profilePicture = new ArrayList<>();
         memberName = new ArrayList<>();
 
+
+        Group group = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getValue(Group.class);
+
+        String mail="";
+
+
+        for(String s : group.getMembers()){
+            for (int i = 0; i < myDataSnapshot.child("emailid").getChildrenCount(); i++) {
+                if (myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class).equals(s)) {
+                    mail = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class);
+                    memberName.add(mail);
+                }
+            }
+        }
+
+
+
+
+
+
         //just for testing
-        memberName.add("Fukka1");
+        /*memberName.add("Fukka1");
         memberName.add("Fukka2");
         memberName.add("Fukka3");
         memberName.add("Fukka4");
-        memberName.add("Fukka5");
+        memberName.add("Fukka5");*/
 
         profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
         profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);

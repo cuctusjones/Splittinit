@@ -30,7 +30,7 @@
         </style>
 
     <style name="Theme_Holo_Dialog_Alert" parent="@android:style/Theme.Holo.Dialog">
-        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/input_register_bg</item>
         <item name="android:windowTitleStyle">@style/DialogWindowTitle_Holo</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
@@ -41,6 +41,11 @@
         <item name="android:maxLines">1</item>
         <item name="android:scrollHorizontally">true</item>
         <item name="android:textAppearance">@android:style/TextAppearance.Holo.DialogWindowTitle</item>
+    </style>
+
+    <style name="PrimaryButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
     </style>
 
 

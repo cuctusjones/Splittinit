@@ -113,16 +113,28 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                /*if(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid())==null) {
+                if(dataSnapshot.child("users").child(auth.getCurrentUser().getUid())==null) {
                     User user = new User(auth.getCurrentUser().getUid(), auth.getCurrentUser().getDisplayName(), null, auth.getCurrentUser().getEmail(), auth.getCurrentUser().getPhotoUrl());
                     myRef.child("users").child(auth.getCurrentUser().getUid()).setValue(user);
-                }*/
+                }
 
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentUser = value;
                 myDataSnapshot = dataSnapshot;
                 revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
+                int owe=0;
+                int getowed=0;
+
+                for(int i=0;i< dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("expenses").getChildrenCount();i++){
+                    if(dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("expenses").child(Integer.toString(i)).child("value").getValue(int.class)>0){
+                        owe+=dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("expenses").child(Integer.toString(i)).child("value").getValue(int.class);
+                    }else{
+                        getowed+=dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("expenses").child(Integer.toString(i)).child("value").getValue(int.class);
+                    }
+                }
+                owing.setTitle(Integer.toString(owe) + "€");
+                getting.setTitle(Integer.toString(getowed)+ "€");
                 Log.d("login", "Value is: " + value);
             }
 
@@ -205,10 +217,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        add_friend = (MenuItem) findViewById(R.id.add_friend);
-        add_group = (MenuItem) findViewById(R.id.add_group);
-        owing = (MenuItem) findViewById(R.id.owing);
-        getting = (MenuItem) findViewById(R.id.getting);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        Menu nv = navigationView.getMenu();
+        owing = nv.findItem(R.id.owing);
+        getting = nv.findItem(R.id.getting);
+        add_friend = nv.findItem(R.id.add_friend);
+        add_group = nv.findItem(R.id.add_group);
+
+
+
 
 
 
@@ -231,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         /*navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -359,6 +377,8 @@ public class MainActivity extends AppCompatActivity {
 
                 currentUser = value;
                 myDataSnapshot = dataSnapshot;
+
+
                 //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
                 Log.d("login", "Value is: " + value);
             }

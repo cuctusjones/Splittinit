@@ -85,9 +85,6 @@ public class Tab1Duo extends Fragment {
             }
         });
 
-        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
-
-        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
 
 
     }

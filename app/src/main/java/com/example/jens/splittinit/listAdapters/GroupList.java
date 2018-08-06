@@ -17,8 +17,12 @@ public class GroupList extends ArrayAdapter<String> {
     private final String[] web;
     private final Integer[] imageId;
 
+    public String[] getWeb() {
+        return web;
+    }
+
     public GroupList(Activity context,
-                      String[] web, Integer[] imageId) {
+                     String[] web, Integer[] imageId) {
         super(context, R.layout.group_list, web);
         this.context = context;
         this.web = web;

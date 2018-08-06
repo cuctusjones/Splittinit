@@ -48,6 +48,7 @@ public class GroupMemberList extends ArrayAdapter<String> {
         userName.setText(web[position]);
         userImage.setImageResource(imageId[position]);
 
+
         return rowView;
     }
 }

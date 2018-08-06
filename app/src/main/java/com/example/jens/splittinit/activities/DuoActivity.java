@@ -12,15 +12,20 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.User;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -39,9 +44,11 @@ public class DuoActivity extends AppCompatActivity {
     private String selectedFriendId;
     DatabaseReference myRef;
     FirebaseDatabase database;
+    StorageReference mStorageRef;
     private FirebaseAuth auth;
     private ArrayList<Expense> currentUserExpenses;
     private ArrayList<Expense> otherUserExpenses;
+    DataSnapshot dataSnapshot;
 
 
     @Override
@@ -52,6 +59,13 @@ public class DuoActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         auth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
+
+        initialize();
+
+
+
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -90,6 +104,13 @@ public class DuoActivity extends AppCompatActivity {
             selectedFriendId = (String) savedInstanceState.getSerializable("selectedFriendId");
         }
 
+        StorageReference groupImg = mStorageRef.child("profileImages/" + selectedFriendId);
+        Glide.with(getApplicationContext())
+                .using(new FirebaseImageLoader())
+                .load(groupImg)
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .into(profileImage);
+
 
     }
 
@@ -99,24 +120,8 @@ public class DuoActivity extends AppCompatActivity {
 
         super.onStart();
 
-        setContentView(R.layout.duo_activity);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        email = (TextView) findViewById(R.id.email);
-        name = (TextView) findViewById(R.id.name);
-
-        oweMoney = (EditText) findViewById(R.id.titel);
-        description = (EditText) findViewById(R.id.description);
-
-        youOwe = (RadioButton) findViewById(R.id.youOwe);
-        himOwe = (RadioButton) findViewById(R.id.himOwe);
-
-        profileImage = findViewById(R.id.profileImage);
-
-        confirm = (Button) findViewById(R.id.confirm);
-        amount = (EditText) findViewById(R.id.amount);
 
 
         email.setText(selectedFriendEmail);
@@ -261,5 +266,28 @@ public class DuoActivity extends AppCompatActivity {
                     whoOwe = false;
                 break;
         }
+    }
+
+    public void initialize(){
+
+        setContentView(R.layout.duo_activity);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        email = (TextView) findViewById(R.id.email);
+        name = (TextView) findViewById(R.id.name);
+
+        oweMoney = (EditText) findViewById(R.id.titel);
+        description = (EditText) findViewById(R.id.description);
+
+        youOwe = (RadioButton) findViewById(R.id.youOwe);
+        himOwe = (RadioButton) findViewById(R.id.himOwe);
+
+        profileImage = findViewById(R.id.profileImage);
+
+        confirm = (Button) findViewById(R.id.confirm);
+        amount = (EditText) findViewById(R.id.amount);
+
     }
 }

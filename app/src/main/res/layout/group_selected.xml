@@ -13,7 +13,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:onClick="changeGroupIcon"
-        android:src="@drawable/umbrella"
         app:civ_border_color="#FF000000"
         app:civ_border_width="2dp"
         app:layout_constraintStart_toStartOf="parent"

@@ -14,8 +14,7 @@
             app:civ_border_color="#FF000000"
             android:id="@+id/img"
             android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/umbrella"/>
+            android:layout_height="100dp" />
 
         <TextView
             android:id="@+id/txt"

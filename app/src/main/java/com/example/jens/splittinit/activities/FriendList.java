@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.GroupMemberList;
 import com.example.jens.splittinit.model.Group;
@@ -165,6 +166,7 @@ public class FriendList extends AppCompatActivity{
                     Glide.with(getApplicationContext())
                             .using(new FirebaseImageLoader())
                             .load(groupImg)
+                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .into(userImage);
                 }
                 return rowView;

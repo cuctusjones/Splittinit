@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(getApplicationContext())
                         .using(new FirebaseImageLoader())
                         .load(groupImg)
+                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                         .into(profileImage);
                 Log.d("login", "Value is: " + value);
             }

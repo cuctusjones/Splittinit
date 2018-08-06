@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.CustomList;
 import com.example.jens.splittinit.model.Expense;
@@ -78,8 +79,6 @@ public class Tab1Duo extends Fragment {
                         currentFriendsEmails.add(dataSnapshot.child("users").child(id).child("email").getValue(String.class));
                     }
                 }
-
-                updateViews(value);
 
 
                 Log.d("login", "Value is: " + value);
@@ -173,7 +172,7 @@ public class Tab1Duo extends Fragment {
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 currentFriendsIds = value.getFriends();
-                updateViews(value);
+
 
 
                 Log.d("login", "Value is: " + value);
@@ -193,6 +192,8 @@ public class Tab1Duo extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
 
         View rootView = inflater.inflate(R.layout.tab1duo, container, false);
@@ -280,6 +281,7 @@ public class Tab1Duo extends Fragment {
         });
 
 
+
         return rootView;
     }
 
@@ -331,6 +333,7 @@ public class Tab1Duo extends Fragment {
                     Glide.with(getActivity())
                             .using(new FirebaseImageLoader())
                             .load(friendImage)
+                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .into(imageView);
                     return rowView;
             }

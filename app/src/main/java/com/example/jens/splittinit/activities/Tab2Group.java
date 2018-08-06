@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.CustomList;
 import com.example.jens.splittinit.model.User;
@@ -116,9 +117,6 @@ public class Tab2Group extends Fragment {
                 User value = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
 
-                updateViews();
-
-
                 Log.d("login", "Value is: " + value);
 
 
@@ -131,7 +129,6 @@ public class Tab2Group extends Fragment {
             }
         });
 
-        updateViews();
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -192,6 +189,7 @@ public class Tab2Group extends Fragment {
                 Glide.with(getActivity())
                         .using(new FirebaseImageLoader())
                         .load(groupImage)
+                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                         .into(imageView);
                 return rowView;
             }

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.GroupMemberList;
 import com.example.jens.splittinit.listAdapters.LogList;
@@ -123,7 +124,7 @@ public class GroupSelected extends AppCompatActivity {
                 currentUser = value;
                 myDataSnapshot = dataSnapshot;
 
-                downloadImage(Integer.toString(getIntent().getIntExtra("groupID", 0)));
+
 
                 Log.d("login", "Value is: " + value);
                 updateViews();
@@ -144,6 +145,9 @@ public class GroupSelected extends AppCompatActivity {
 
         myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
 
+        downloadImage(Integer.toString(getIntent().getIntExtra("groupID", 0)));
+
+
 
 
     }
@@ -153,6 +157,7 @@ public class GroupSelected extends AppCompatActivity {
         Glide.with(getApplicationContext())
                 .using(new FirebaseImageLoader())
                 .load(groupImg)
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                 .into(groupImage);
     }
 
@@ -217,6 +222,9 @@ public class GroupSelected extends AppCompatActivity {
                         }
                     });
         }
+
+        downloadImage(Integer.toString(getIntent().getIntExtra("groupID", 0)));
+
     }
 
     private void updateViews() {
@@ -270,6 +278,7 @@ public class GroupSelected extends AppCompatActivity {
                     Glide.with(getApplicationContext())
                             .using(new FirebaseImageLoader())
                             .load(groupImg)
+                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .into(userImage);
                 }
                 return rowView;
@@ -282,12 +291,12 @@ public class GroupSelected extends AppCompatActivity {
 
         logEntry = new ArrayList<>();
 
-        logEntry.add("Fukka fucked Fukka2");
-        logEntry.add("Fukka2 fucked Fukka3");
-        logEntry.add("Fukka3 fucked Fukka4");
-        logEntry.add("Fukka4 fucked Fukka5");
-        logEntry.add("Fukka fucked Fukka2");
-        logEntry.add("Fukka2 fucked Fukka3");
+        logEntry.add("Jens paid 40€");
+        logEntry.add("Timo owes Jens 10€");
+        logEntry.add("Zabrina owes Jens 10€");
+        logEntry.add("Marc owes Jens 10€");
+        logEntry.add("Marc paid 420€");
+        logEntry.add("Jens owes Marc 260€");
         logEntry.add("Fukka3 fucked Fukka4");
         logEntry.add("Fukka4 fucked Fukka5");
         logEntry.add("Fukka fucked Fukka2");
@@ -357,6 +366,7 @@ public class GroupSelected extends AppCompatActivity {
         });
 
 
+
         //change groupname accordingly
         //groupName.setText(myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("name").getValue(String.class));
 
@@ -368,9 +378,10 @@ public class GroupSelected extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_CANCELED && requestCode == TAKE_IMAGE) {
             Bundle extras = data.getExtras();
+            Uri uri = data.getData();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            uploadImage(data.getData());
             groupImage.setImageBitmap(imageBitmap);
+            uploadImage(data.getData());
 
         }
         if (resultCode != RESULT_CANCELED) {

@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
                 currentUser = value;
                 myDataSnapshot = dataSnapshot;
-                //revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
+                revNameField.setText(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("name").getValue(String.class));
                 Log.d("login", "Value is: " + value);
             }
 

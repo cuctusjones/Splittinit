@@ -13,7 +13,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,11 +23,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.GroupMemberList;
 import com.example.jens.splittinit.listAdapters.LogList;
 import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,8 +50,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GroupSelected extends AppCompatActivity {
 
-    public TextView groupName, debt;
-    public CircleImageView groupImage;
+    public TextView groupName, debt, userName;
+    public CircleImageView groupImage, userImage;
     public ListView listOfMembers, log;
     public FloatingActionButton fab;
     public Button addMember;
@@ -83,12 +87,17 @@ public class GroupSelected extends AppCompatActivity {
 
 
 
+
         // Write a message to the database
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
+
+
+
+
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -101,6 +110,7 @@ public class GroupSelected extends AppCompatActivity {
                     myRef.child("users").child(auth.getCurrentUser().getUid()).setValue(user);
                 }*/
 
+
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
                 ArrayList<Group> groups = new ArrayList<Group>();
@@ -110,20 +120,18 @@ public class GroupSelected extends AppCompatActivity {
 
                 groupArrayList=groups;
 
-
-
-
-
-
-
                 currentUser = value;
                 myDataSnapshot = dataSnapshot;
 
-
+                downloadImage(Integer.toString(getIntent().getIntExtra("groupID", 0)));
 
                 Log.d("login", "Value is: " + value);
                 updateViews();
             }
+
+
+
+
 
             @Override
             public void onCancelled(DatabaseError error) {
@@ -132,7 +140,20 @@ public class GroupSelected extends AppCompatActivity {
             }
         });
 
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
 
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
+
+
+
+    }
+
+    public void downloadImage(String s){
+        StorageReference groupImg = mStorageRef.child("groupImages/" + s);
+        Glide.with(getApplicationContext())
+                .using(new FirebaseImageLoader())
+                .load(groupImg)
+                .into(groupImage);
     }
 
     public void changeGroupIcon(View view){
@@ -158,11 +179,7 @@ public class GroupSelected extends AppCompatActivity {
                     });
             AlertDialog alert = builder.create();
             alert.show();
-    }
-
-    private StorageReference getImage() {
-        StorageReference profilePicture = mStorageRef.child("profileImages/" + auth.getCurrentUser().getUid());
-        return profilePicture;
+            updateViews();
     }
 
 
@@ -175,7 +192,7 @@ public class GroupSelected extends AppCompatActivity {
             progressDialog.show();
 
 
-            StorageReference ref = mStorageRef.child("groupImages/" + auth.getCurrentUser().getUid());
+            final StorageReference ref = mStorageRef.child("groupImages/" + getIntent().getIntExtra("groupID", 0));
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -204,12 +221,15 @@ public class GroupSelected extends AppCompatActivity {
 
     private void updateViews() {
 
+
+
         //memberlist
         profilePicture = new ArrayList<>();
         memberName = new ArrayList<>();
 
 
-        Group group = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getValue(Group.class);
+
+        final Group group = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getValue(Group.class);
 
         String mail="";
 
@@ -219,38 +239,43 @@ public class GroupSelected extends AppCompatActivity {
                 if (myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class).equals(s)) {
                     mail = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class);
                     memberName.add(mail);
+
                 }
             }
         }
 
 
 
-
-
-
-        //just for testing
-        /*memberName.add("Fukka1");
-        memberName.add("Fukka2");
-        memberName.add("Fukka3");
-        memberName.add("Fukka4");
-        memberName.add("Fukka5");*/
-
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        //just for testing
-
-
         Integer[] profileImageArray = new Integer[profilePicture.size()];
         profileImageArray = profilePicture.toArray(profileImageArray);
 
-        String[] memberNameArray = new String[memberName.size()];
-        memberNameArray = memberName.toArray(memberNameArray);
+         //memberNameArray = new String[memberName.size()];
+        final String[] memberNameArray = memberName.toArray(new String[memberName.size()]);
 
 
-        GroupMemberList adapter = new GroupMemberList(this, memberNameArray, profileImageArray);
+        final GroupMemberList adapter = new GroupMemberList(this, memberNameArray, profileImageArray){
+            @Override
+            public View getView(int position, View view, ViewGroup parent){
+                LayoutInflater inflater = GroupSelected.this.getLayoutInflater();
+                View rowView= inflater.inflate(R.layout.member_view_group_list, null, true);
+                userName = rowView.findViewById(R.id.userName);
+
+                userImage = rowView.findViewById(R.id.userImage);
+
+
+
+                userName.setText(memberName.get(position));
+                StorageReference groupImg = mStorageRef.child("profileImages/" + group.getMembers().get(position));
+                if(groupImg!=null){
+                    Glide.with(getApplicationContext())
+                            .using(new FirebaseImageLoader())
+                            .load(groupImg)
+                            .into(userImage);
+                }
+                return rowView;
+
+            }
+        };
         listOfMembers.setAdapter(adapter);
 
         //logList
@@ -285,17 +310,20 @@ public class GroupSelected extends AppCompatActivity {
 
         //groupImage.setImageResource(R.drawable.check_split);
 
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
+
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(GroupSelected.this, GroupExpenses.class));
+                Intent intent = new Intent(GroupSelected.this, GroupExpenses.class);
+                intent.putExtra("groupID", getIntent().getIntExtra("groupID", 0));
+                startActivity(intent);
             }
         });
 
-        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
-
-        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
 
 
         myRef.addValueEventListener(new ValueEventListener() {

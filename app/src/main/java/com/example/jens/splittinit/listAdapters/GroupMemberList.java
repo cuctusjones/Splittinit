@@ -21,6 +21,11 @@ public class GroupMemberList extends ArrayAdapter<String> {
 
     private final Activity context;
     private final String[] web;
+
+    public String[] getWeb() {
+        return web;
+    }
+
     private final Integer[] imageId;
 
     public GroupMemberList(Activity context,

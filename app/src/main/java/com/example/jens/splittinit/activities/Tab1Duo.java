@@ -15,20 +15,26 @@ import android.widget.ListView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.CustomList;
 import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.User;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class Tab1Duo extends Fragment {
@@ -41,6 +47,7 @@ public class Tab1Duo extends Fragment {
     FirebaseDatabase database;
     DatabaseReference myRef;
     ListView list;
+    User user1;
 
     private ArrayList<String> currentFriendsIds;
     private ArrayList<String> currentFriendsEmails;
@@ -196,6 +203,7 @@ public class Tab1Duo extends Fragment {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         auth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -205,7 +213,7 @@ public class Tab1Duo extends Fragment {
                 // whenever data at this location is updated.
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
                 myDataSnapshot = dataSnapshot;
-
+                user1=value;
                 updateViews(value);
 
 
@@ -282,11 +290,14 @@ public class Tab1Duo extends Fragment {
 
     private void updateViews(User user) {
         if (user.getExpenses() != null) {
-            String[] expenses = new String[user.getExpenses().size()];
+            final String[] expenses = new String[user.getExpenses().size()];
+            final String[] friendids = new String[user.getExpenses().size()];
+
 
             int i = 0;
             for (Expense e : user.getExpenses()) {
                 expenses[i] = myDataSnapshot.child("users").child(e.getFriendid()).child("email").getValue(String.class) + " \n\nDEBT: " + e.getValue() + "€";
+                friendids[i] = e.getFriendid();
                 i++;
             }
 
@@ -306,7 +317,24 @@ public class Tab1Duo extends Fragment {
             };
 
 
-            CustomList adapter = new CustomList(getActivity(), expenses, imageId);
+            CustomList adapter = new CustomList(getActivity(), expenses, imageId){
+                @Override
+                public View getView(int position, View view, ViewGroup parent) {
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    View rowView= inflater.inflate(R.layout.list_single, null, true);
+                    TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
+
+                    CircleImageView imageView = rowView.findViewById(R.id.img);
+                    txtTitle.setText(expenses[position]);
+
+                    StorageReference friendImage = mStorageRef.child("profileImages/" + friendids[position]);
+                    Glide.with(getActivity())
+                            .using(new FirebaseImageLoader())
+                            .load(friendImage)
+                            .into(imageView);
+                    return rowView;
+            }
+            };
             list.setAdapter(adapter);
 
         }

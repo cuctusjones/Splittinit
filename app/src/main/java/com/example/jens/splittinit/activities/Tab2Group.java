@@ -13,11 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.CustomList;
 import com.example.jens.splittinit.model.User;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -34,16 +37,19 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Tab2Group extends Fragment {
 
     public ListView list;
     public ArrayList<Integer> groupImg;
-    public ArrayList<String> groupName;
+    public ArrayList<String> groupName,groupIds;
 
     FirebaseDatabase database;
     DatabaseReference myRef;
     private FirebaseAuth auth;
     private DataSnapshot myDataSnapshot;
+    private StorageReference mStorageRef;
 
 
     public ConstraintLayout constraintLayout;
@@ -64,6 +70,7 @@ public class Tab2Group extends Fragment {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         auth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -95,12 +102,10 @@ public class Tab2Group extends Fragment {
     }
 
 
-
     @Override
     public void onStart() {
 
         super.onStart();
-
 
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -109,7 +114,6 @@ public class Tab2Group extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 User value = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
-
 
 
                 updateViews();
@@ -127,19 +131,22 @@ public class Tab2Group extends Fragment {
             }
         });
 
+        updateViews();
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick (AdapterView < ? > adapter, View view, int position, long arg){
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 Intent intent = new Intent(getActivity(), GroupSelected.class);
 
                 int id = Integer.parseInt(myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").child(Integer.toString(position)).getValue(String.class));
-                intent.putExtra("groupID",id);
+                intent.putExtra("groupID", id);
                 startActivity(intent);
 
-                }
+            }
         });
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("12");
 
-
+        myRef.child("users").child("000").child("expenses").child("0").child("value").setValue("15");
 
 
     }
@@ -148,26 +155,20 @@ public class Tab2Group extends Fragment {
 
         groupImg = new ArrayList<Integer>();
         groupName = new ArrayList<String>();
+        groupIds = new ArrayList<String>();
 
-        if(myDataSnapshot!= null) {
+        if (myDataSnapshot != null) {
             for (int i = 0; i < myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").getChildrenCount(); i++) {
 
 
                 String grID = myDataSnapshot.child("users").child(auth.getCurrentUser().getUid()).child("groups").child(Integer.toString(i)).getValue(String.class);
                 groupName.add(myDataSnapshot.child("groups").child(grID).child("name").getValue(String.class));
+                groupIds.add(grID);
             }
         }
 
 
-        groupImg.add(R.drawable.check_split);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
-        groupImg.add(R.drawable.common_google_signin_btn_icon_dark);
+
 
 
         Integer[] groupImgArray = new Integer[groupImg.size()];
@@ -177,7 +178,25 @@ public class Tab2Group extends Fragment {
         String[] groupNameArray = new String[groupName.size()];
         groupNameArray = groupName.toArray(groupNameArray);
 
-        CustomList adapter = new CustomList(getActivity(), groupNameArray, groupImgArray);
+        CustomList adapter = new CustomList(getActivity(), groupNameArray, groupImgArray) {
+            @Override
+            public View getView(int position, View view, ViewGroup parent) {
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View rowView = inflater.inflate(R.layout.list_single, null, true);
+                TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
+
+                CircleImageView imageView = rowView.findViewById(R.id.img);
+                txtTitle.setText(groupName.get(position));
+
+                StorageReference groupImage = mStorageRef.child("groupImages/" + groupIds.get(position));
+                Glide.with(getActivity())
+                        .using(new FirebaseImageLoader())
+                        .load(groupImage)
+                        .into(imageView);
+                return rowView;
+            }
+        };
+
         list.setAdapter(adapter);
 
         /*list.setOnClickListener(new View.OnClickListener() {

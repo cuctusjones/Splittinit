@@ -4,15 +4,22 @@ package com.example.jens.splittinit.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.GroupExpensesList;
 import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +39,7 @@ public class GroupExpenses extends AppCompatActivity{
     public CircleImageView groupImage;
     public ListView memberList;
     public Button confirm;
+    public TextView groupName;
 
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -110,17 +118,17 @@ public class GroupExpenses extends AppCompatActivity{
 
     }
 
-    public void updateViews(){
+    public void updateViews() {
 
         profilePicture = new ArrayList<>();
         memberName = new ArrayList<>();
 
-        Group group = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getValue(Group.class);
+        final Group group = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getValue(Group.class);
 
-        String mail="";
+        String mail = "";
 
 
-        for(String s : group.getMembers()){
+        for (String s : group.getMembers()) {
             for (int i = 0; i < myDataSnapshot.child("emailid").getChildrenCount(); i++) {
                 if (myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class).equals(s)) {
                     mail = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class);
@@ -128,30 +136,47 @@ public class GroupExpenses extends AppCompatActivity{
                 }
             }
         }
-        //just for testing
-        /*memberName.add("Fukka1");
-        memberName.add("Fukka2");
-        memberName.add("Fukka3");
-        memberName.add("Fukka4");
-        memberName.add("Fukka5");*/
 
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        profilePicture.add(R.drawable.common_google_signin_btn_icon_dark);
-        //just for testing
+        StorageReference groupImg = mStorageRef.child("groupImages/" + getIntent().getIntExtra("groupID", 0));
+        Glide.with(getApplicationContext())
+                .using(new FirebaseImageLoader())
+                .load(groupImg)
+                .into(groupImage);
+
+        groupName.setText(group.getName());
 
 
-        Integer [] profileImageArray = new Integer[profilePicture.size()];
+
+
+        Integer[] profileImageArray = new Integer[profilePicture.size()];
         profileImageArray = profilePicture.toArray(profileImageArray);
 
         String[] memberNameArray = new String[memberName.size()];
         memberNameArray = memberName.toArray(memberNameArray);
 
 
-        GroupExpensesList adapter = new GroupExpensesList(this, memberNameArray, profileImageArray);
+        GroupExpensesList adapter = new GroupExpensesList(this, memberNameArray, profileImageArray) {
+            @Override
+            public View getView(int position, View view, ViewGroup parent) {
+                LayoutInflater inflater = GroupExpenses.this.getLayoutInflater();
+                View rowView = inflater.inflate(R.layout.group_checkbox_list, null, true);
+                CheckBox membrName = rowView.findViewById(R.id.memberName);
+
+                CircleImageView profilePicture = rowView.findViewById(R.id.profileImage);
+
+
+                membrName.setText(memberName.get(position));
+
+                StorageReference groupImg = mStorageRef.child("profileImages/" + group.getMembers().get(position));
+                Glide.with(getApplicationContext())
+                        .using(new FirebaseImageLoader())
+                        .load(groupImg)
+                        .into(profilePicture);
+                return rowView;
+            }
+        };
         memberList.setAdapter(adapter);
+
     }
 
     private void initialize() {
@@ -163,6 +188,7 @@ public class GroupExpenses extends AppCompatActivity{
         groupImage = findViewById(R.id.profileImage);
         memberList = findViewById(R.id.memberList);
         confirm = findViewById(R.id.confirm);
+        groupName = findViewById(R.id.groupName);
 
 
 

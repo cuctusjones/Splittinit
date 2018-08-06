@@ -28,9 +28,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -135,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 owing.setTitle(Integer.toString(owe) + "€");
                 getting.setTitle(Integer.toString(getowed)+ "€");
+
+                StorageReference groupImg = mStorageRef.child("profileImages/" + auth.getCurrentUser().getUid());
+                Glide.with(getApplicationContext())
+                        .using(new FirebaseImageLoader())
+                        .load(groupImg)
+                        .into(profileImage);
                 Log.d("login", "Value is: " + value);
             }
 
@@ -421,10 +429,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private StorageReference getImage() {
-        StorageReference profilePicture = mStorageRef.child("profileImages/" + auth.getCurrentUser().getUid());
-        return profilePicture;
-    }
 
     private void uploadImage(Uri filePath) {
 

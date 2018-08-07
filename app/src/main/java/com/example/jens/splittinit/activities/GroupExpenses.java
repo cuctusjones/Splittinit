@@ -38,7 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.jens.splittinit.activities.DuoActivity.isInteger;
 
-public class GroupExpenses extends AppCompatActivity{
+public class GroupExpenses extends AppCompatActivity {
 
     public EditText title, description, amount;
     public CircleImageView groupImage;
@@ -55,45 +55,83 @@ public class GroupExpenses extends AppCompatActivity{
     public CheckBox checkBox;
     public boolean[] checkBoxes;
     private ArrayList<Expense> currentUserExpenses;
-    private ArrayList<ArrayList<Expense>> otherUserExpenses;
-    private ArrayList<String> otherUserIds;
+    private ArrayList<ArrayList<Expense>> otherUserExpenses = new ArrayList<>();
+    private ArrayList<String> otherUserIds = new ArrayList<>();
+    private Group group;
 
 
     public ArrayList<Integer> profilePicture;
     public ArrayList<String> memberName;
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
 
-        Group group = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getValue(Group.class);
-
-        for(int i=0;i<checkBoxes.length;i++){
-            if(checkBoxes[i]){
-                otherUserIds.add(group.getMembers().get(i));
-                User user = myDataSnapshot.child("users").child(group.getMembers().get(i)).getValue(User.class);
-
-                otherUserExpenses.add(user.getExpenses());
-            }
-        }
 
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+
+                for (int i = 0; i < checkBoxes.length; i++) {
+                    if (checkBoxes[i]) {
+
+                        otherUserIds.add(group.getMembers().get(i));
+
+                        User user = myDataSnapshot.child("users").child(group.getMembers().get(i)).getValue(User.class);
+
+                        otherUserExpenses.add(user.getExpenses());
+                    }
+                }
+
+
                 if (isValid()) {
+                    int money = Integer.parseInt(amount.getText().toString());
+                    money=money/group.getMembers().size();
+                    int i = 0;
+                    for (String s : otherUserIds) {
+                        //addNewExpense(s, auth.getCurrentUser().getUid(), money / otherUserIds.size(), otherUserExpenses.get(i));
+                        boolean alreadyInList = false;
+                        for (Expense e : otherUserExpenses.get(i)) {
+                            if (e.getFriendid().equals(auth.getCurrentUser().getUid())) {
+                                e.setValue(e.getValue() + money);
 
-                    for(String s : otherUserIds){
-                        for(Expense e : currentUserExpenses){
-                            if(e.getFriendid().equals(s)) {
-                                e.setValue(e.getValue() - (Integer.parseInt(amount.getText().toString()))/otherUserIds.size());   // subtract owing from current user from other user divided by number of participants
 
+                                myRef.child("users").child(s).child("expenses").setValue(otherUserExpenses.get(i));
+                                alreadyInList = true;
                             }
+
+
+
+
+                        }
+                        if (!alreadyInList) {
+                            otherUserExpenses.get(i).add(new Expense(money, auth.getCurrentUser().getUid()));
+                            myRef.child("users").child(s).child("expenses").setValue(otherUserExpenses.get(i));
                         }
 
 
+                        //addNewExpense(auth.getCurrentUser().getUid(), s, (money / otherUserIds.size()) * (-1), currentUserExpenses);
+
+                        alreadyInList = false;
+                        for (Expense e : currentUserExpenses) {
+                            if (e.getFriendid().equals(s)) {
+                                e.setValue(e.getValue() + (money*(-1)));
+
+
+                                myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                                alreadyInList = true;
+                            }
+
+
+
+
+                        }
+                        if (!alreadyInList) {
+                            currentUserExpenses.add(new Expense((money*(-1)), s));
+                            myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
+                        }
 
                     }
-
 
 
                 } else {
@@ -107,11 +145,31 @@ public class GroupExpenses extends AppCompatActivity{
         });
 
 
+    }
 
+
+    public void addNewExpense(String uid, String friendID, int money, ArrayList<Expense> userExpenses) {
+        boolean alreadyInList = false;
+        for (Expense e : userExpenses) {
+            if (e.getFriendid().equals(friendID)) {
+                e.setValue(e.getValue() + money);
+
+
+                myRef.child("users").child(uid).child("expenses").setValue(userExpenses);
+                alreadyInList = true;
+            }
+
+            if (!alreadyInList) {
+                userExpenses.add(new Expense(money, friendID));
+                myRef.child("users").child(uid).child("expenses").setValue(userExpenses);
+            }
+
+
+        }
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
@@ -126,7 +184,7 @@ public class GroupExpenses extends AppCompatActivity{
                     Toast.LENGTH_LONG).show();
             return false;
         }
-        if (!isInteger(amount.getText().toString())&& Integer.parseInt(amount.getText().toString())>0) {
+        if (!isInteger(amount.getText().toString()) && Integer.parseInt(amount.getText().toString()) > 0) {
             Toast.makeText(GroupExpenses.this, "enter valid amount",
                     Toast.LENGTH_LONG).show();
             return false;
@@ -163,17 +221,14 @@ public class GroupExpenses extends AppCompatActivity{
                 User value = dataSnapshot.child("users").child(auth.getCurrentUser().getUid()).getValue(User.class);
 
 
-
-
-
-
-
-
-
                 currentUser = value;
                 myDataSnapshot = dataSnapshot;
 
 
+                group = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).getValue(Group.class);
+                if(currentUserExpenses==null){
+                    currentUserExpenses = value.getExpenses();
+                }
 
 
 
@@ -187,9 +242,6 @@ public class GroupExpenses extends AppCompatActivity{
                 Log.w("login", "Failed to read value.", error.toException());
             }
         });
-        updateViews();
-
-
 
 
     }
@@ -205,83 +257,85 @@ public class GroupExpenses extends AppCompatActivity{
 
 
         for (String s : group.getMembers()) {
+
+
             for (int i = 0; i < myDataSnapshot.child("emailid").getChildrenCount(); i++) {
                 if (myDataSnapshot.child("emailid").child(Integer.toString(i)).child("id").getValue(String.class).equals(s)) {
                     mail = myDataSnapshot.child("emailid").child(Integer.toString(i)).child("email").getValue(String.class);
                     memberName.add(mail);
                 }
+
             }
-        }
 
-        StorageReference groupImg = mStorageRef.child("groupImages/" + getIntent().getIntExtra("groupID", 0));
-        Glide.with(getApplicationContext())
-                .using(new FirebaseImageLoader())
-                .load(groupImg)
-                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                .into(groupImage);
+            StorageReference groupImg = mStorageRef.child("groupImages/" + getIntent().getIntExtra("groupID", 0));
+            Glide.with(getApplicationContext())
+                    .using(new FirebaseImageLoader())
+                    .load(groupImg)
+                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                    .into(groupImage);
 
-        groupName.setText(group.getName());
-
+            groupName.setText(group.getName());
 
 
+            Integer[] profileImageArray = new Integer[profilePicture.size()];
+            profileImageArray = profilePicture.toArray(profileImageArray);
 
-        Integer[] profileImageArray = new Integer[profilePicture.size()];
-        profileImageArray = profilePicture.toArray(profileImageArray);
+            String[] memberNameArray = new String[memberName.size()];
+            memberNameArray = memberName.toArray(memberNameArray);
 
-        String[] memberNameArray = new String[memberName.size()];
-        memberNameArray = memberName.toArray(memberNameArray);
-
-        checkBoxes = new boolean[memberName.size()];
-
-
-        GroupExpensesList adapter = new GroupExpensesList(this, memberNameArray, profileImageArray) {
-            @Override
-            public View getView(final int position, View view, ViewGroup parent) {
-                LayoutInflater inflater = GroupExpenses.this.getLayoutInflater();
-                View rowView = inflater.inflate(R.layout.group_checkbox_list, null, true);
-                checkBox = rowView.findViewById(R.id.memberName);
-
-                CircleImageView profilePicture = rowView.findViewById(R.id.profileImage);
+            checkBoxes = new boolean[memberName.size()];
 
 
-                checkBox.setText(memberName.get(position));
+            GroupExpensesList adapter = new GroupExpensesList(this, memberNameArray, profileImageArray) {
+                @Override
+                public View getView(final int position, View view, ViewGroup parent) {
+                    LayoutInflater inflater = GroupExpenses.this.getLayoutInflater();
+                    View rowView = inflater.inflate(R.layout.group_checkbox_list, null, true);
+                    checkBox = rowView.findViewById(R.id.memberName);
 
-                StorageReference groupImg = mStorageRef.child("profileImages/" + group.getMembers().get(position));
-                Glide.with(getApplicationContext())
-                        .using(new FirebaseImageLoader())
-                        .load(groupImg)
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                        .into(profilePicture);
+                    CircleImageView profilePicture = rowView.findViewById(R.id.profileImage);
 
-                checkBox.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(checkBox.isChecked()){
-                            checkBoxes[position]=true;
+
+                    checkBox.setText(memberName.get(position));
+
+                    StorageReference groupImg = mStorageRef.child("profileImages/" + group.getMembers().get(position));
+                    Glide.with(getApplicationContext())
+                            .using(new FirebaseImageLoader())
+                            .load(groupImg)
+                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                            .into(profilePicture);
+
+                    checkBox.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!checkBoxes[position]) {
+                                checkBoxes[position] = true;
+                            } else {
+                                checkBoxes[position] = false;
+                            }
+
+
                         }
-
-                    }
-                });
-                return rowView;
-            }
-        };
-        memberList.setAdapter(adapter);
+                    });
+                    return rowView;
+                }
+            };
+            memberList.setAdapter(adapter);
 
 
+        }
     }
+        private void initialize () {
+            setContentView(R.layout.group_expenses);
 
-    private void initialize() {
-        setContentView(R.layout.group_expenses);
-
-        title = findViewById(R.id.titel);
-        description = findViewById(R.id.description);
-        amount = findViewById(R.id.amount);
-        groupImage = findViewById(R.id.profileImage);
-        memberList = findViewById(R.id.memberList);
-        confirm = findViewById(R.id.confirm);
-        groupName = findViewById(R.id.groupName);
-
+            title = findViewById(R.id.titel);
+            description = findViewById(R.id.description);
+            amount = findViewById(R.id.amount);
+            groupImage = findViewById(R.id.profileImage);
+            memberList = findViewById(R.id.memberList);
+            confirm = findViewById(R.id.confirm);
+            groupName = findViewById(R.id.groupName);
 
 
+        }
     }
-}

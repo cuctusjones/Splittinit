@@ -28,6 +28,7 @@ import com.bumptech.glide.signature.StringSignature;
 import com.example.jens.splittinit.R;
 import com.example.jens.splittinit.listAdapters.GroupMemberList;
 import com.example.jens.splittinit.listAdapters.LogList;
+import com.example.jens.splittinit.model.Expense;
 import com.example.jens.splittinit.model.Group;
 import com.example.jens.splittinit.model.User;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -315,6 +316,17 @@ public class GroupSelected extends AppCompatActivity {
 
         LogList adapter2 = new LogList(this, logEntryArray);
         log.setAdapter(adapter2);
+        int debt1=0;
+
+        for(Expense e :currentUser.getExpenses()){
+            for(String s :group.getMembers()){
+                if(e.getFriendid().equals(s)){
+                    debt1+=e.getValue();
+                }
+            }
+        }
+
+        debt.setText(Integer.toString(debt1));
 
 
     }

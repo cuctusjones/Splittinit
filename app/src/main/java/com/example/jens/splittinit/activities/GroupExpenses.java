@@ -57,6 +57,7 @@ public class GroupExpenses extends AppCompatActivity {
     private ArrayList<Expense> currentUserExpenses;
     private ArrayList<ArrayList<Expense>> otherUserExpenses = new ArrayList<>();
     private ArrayList<String> otherUserIds = new ArrayList<>();
+    private ArrayList<String> otherUserNames = new ArrayList<>();
     private Group group;
 
 
@@ -80,16 +81,33 @@ public class GroupExpenses extends AppCompatActivity {
                         User user = myDataSnapshot.child("users").child(group.getMembers().get(i)).getValue(User.class);
 
                         otherUserExpenses.add(user.getExpenses());
+                        otherUserNames.add(user.getEmail());
                     }
                 }
 
 
                 if (isValid()) {
-                    int money = Integer.parseInt(amount.getText().toString());
-                    money=money/group.getMembers().size();
+                    int money1 = Integer.parseInt(amount.getText().toString());
+                    int money=money1/group.getMembers().size();
+
+                    int logid=0;
+                    String name = currentUser.getEmail();
+                    int index = name.indexOf("@");
+                    name = name.substring(0,index);
+                    logid=(int)myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("log").getChildrenCount();
+                    myRef.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("log").child(Integer.toString(logid)).setValue(name+" paid " + money1);
+                    logid++;
                     int i = 0;
                     for (String s : otherUserIds) {
                         //addNewExpense(s, auth.getCurrentUser().getUid(), money / otherUserIds.size(), otherUserExpenses.get(i));
+
+                        name=otherUserNames.get(i);
+                        index=name.indexOf("@");
+                        name=name.substring(0,index);
+                        myRef.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("log").child(Integer.toString(logid)).setValue(name+" owes " + money);
+                        logid++;
+
+
                         boolean alreadyInList = false;
                         for (Expense e : otherUserExpenses.get(i)) {
                             if (e.getFriendid().equals(auth.getCurrentUser().getUid())) {
@@ -130,7 +148,7 @@ public class GroupExpenses extends AppCompatActivity {
                             currentUserExpenses.add(new Expense((money*(-1)), s));
                             myRef.child("users").child(auth.getCurrentUser().getUid()).child("expenses").setValue(currentUserExpenses);
                         }
-
+                        i++;
                     }
 
 

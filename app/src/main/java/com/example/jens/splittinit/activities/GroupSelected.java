@@ -291,18 +291,24 @@ public class GroupSelected extends AppCompatActivity {
 
         logEntry = new ArrayList<>();
 
+        for(int i=0;i<(int) myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("log").getChildrenCount();i++){
+            String message = myDataSnapshot.child("groups").child(Integer.toString(getIntent().getIntExtra("groupID", 0))).child("log").child(Integer.toString(i)).getValue(String.class);
+            logEntry.add(message);
+        }
+
         logEntry.add("Jens paid 40€");
         logEntry.add("Timo owes Jens 10€");
         logEntry.add("Zabrina owes Jens 10€");
         logEntry.add("Marc owes Jens 10€");
         logEntry.add("Marc paid 420€");
         logEntry.add("Jens owes Marc 260€");
-        logEntry.add("Fukka3 fucked Fukka4");
+
+        /*logEntry.add("Fukka3 fucked Fukka4");
         logEntry.add("Fukka4 fucked Fukka5");
         logEntry.add("Fukka fucked Fukka2");
         logEntry.add("Fukka2 fucked Fukka3");
         logEntry.add("Fukka3 fucked Fukka4");
-        logEntry.add("Fukka4 fucked Fukka5");
+        logEntry.add("Fukka4 fucked Fukka5");*/
 
         String[] logEntryArray = new String[logEntry.size()];
         logEntryArray = logEntry.toArray(logEntryArray);

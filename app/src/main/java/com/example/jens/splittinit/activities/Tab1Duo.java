@@ -298,7 +298,13 @@ public class Tab1Duo extends Fragment {
 
             int i = 0;
             for (Expense e : user.getExpenses()) {
-                expenses[i] = myDataSnapshot.child("users").child(e.getFriendid()).child("email").getValue(String.class) + " \n\nDEBT: " + e.getValue() + "€";
+                String name =myDataSnapshot.child("users").child(e.getFriendid()).child("email").getValue(String.class);
+                int index = name.indexOf("@");
+                name = name.substring(0,index);
+
+
+                expenses[i] = name + " \n\nDEBT: " + e.getValue() + "€";
+
                 friendids[i] = e.getFriendid();
                 i++;
             }
